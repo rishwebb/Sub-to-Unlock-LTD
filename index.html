@@ -3,228 +3,308 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sub4Unlock | Created by Rishav</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Sub4Unlock Premium | Created by Rishav</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
+
         :root {
-            --primary: #3b82f6;
-            --yt-red: #ff3131;
-            --ig-pink: #d62976;
-            --bg: #f1f5f9;
+            --primary: #4f46e5;
+            --yt: #ff0000;
+            --ig: #e1306c;
             --success: #10b981;
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: var(--bg);
+            font-family: 'Poppins', sans-serif;
             margin: 0;
+            background: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 0.5px, transparent 0.5px);
+            background-size: 24px 24px;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            color: #1e293b;
         }
 
-        /* Top Branding for Distributed Link */
+        /* Top Header for Viewers */
         #top-branding {
             display: none;
-            text-align: center;
-            padding: 20px;
-            font-size: 24px;
+            margin-top: 40px;
             font-weight: 800;
-            color: #1e293b;
-            letter-spacing: 1px;
+            font-size: 1.5rem;
+            color: var(--primary);
             text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
-        .container {
+        .main-container {
             display: flex;
             justify-content: center;
             align-items: center;
             flex-grow: 1;
             width: 100%;
+            padding: 20px;
         }
 
         .card {
             background: white;
-            padding: 2.5rem;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            width: 90%;
-            max-width: 450px;
+            padding: 40px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 440px;
             text-align: center;
+            border: 1px solid #f1f5f9;
         }
 
-        /* Creator UI */
-        .creator-ui input {
+        h2 { font-weight: 800; margin-top: 0; font-size: 1.8rem; }
+        p { color: #64748b; margin-bottom: 30px; font-size: 0.95rem; }
+
+        /* Rounded Input Boxes */
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 1.1rem;
+        }
+
+        input {
             width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
+            padding: 16px 16px 16px 50px;
+            border: 2px solid #f1f5f9;
+            border-radius: var(--radius-md);
+            outline: none;
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.3s ease;
             box-sizing: border-box;
-            outline-color: var(--primary);
+            background: #fdfdfd;
         }
 
+        input:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+
+        /* Buttons */
         .btn {
-            border: none;
-            padding: 14px;
-            width: 100%;
-            border-radius: 8px;
-            font-weight: bold;
             cursor: pointer;
-            transition: 0.3s;
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 16px;
+            width: 100%;
+            font-weight: 600;
+            font-size: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
+            transition: all 0.3s ease;
             text-decoration: none;
+            margin-bottom: 12px;
         }
 
-        .gen-btn { background: var(--primary); color: white; margin-top: 10px; }
-        .gen-btn:hover { background: #2563eb; }
+        .btn-gen { background: var(--primary); color: white; margin-top: 10px; }
+        .btn-gen:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4); }
 
-        .copy-area {
+        .btn-yt { background: var(--yt); color: white; }
+        .btn-ig { background: var(--ig); color: white; }
+        
+        .btn-unlock {
+            background: #6366f1;
+            color: white;
+            opacity: 0.4;
+            pointer-events: none;
             margin-top: 20px;
-            padding: 15px;
-            background: #f8fafc;
-            border: 2px dashed #cbd5e1;
-            border-radius: 10px;
-            display: none;
         }
 
-        #output-url {
-            display: block;
-            word-break: break-all;
-            font-size: 12px;
-            color: #64748b;
-            margin-bottom: 10px;
+        .btn-unlock.active {
+            opacity: 1;
+            pointer-events: auto;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            animation: bounce 2s infinite;
         }
 
-        .copy-btn { background: #1e293b; color: white; font-size: 14px; padding: 10px; }
-
-        /* Locker UI */
-        #locker { display: none; }
-        .step-btn { color: white; margin-bottom: 12px; }
-        .yt { background: var(--yt-red); }
-        .ig { background: var(--ig-pink); }
-        .final-btn { background: #9d7df3; opacity: 0.4; pointer-events: none; }
-        .final-btn.active { opacity: 1; pointer-events: auto; }
         .completed { background: var(--success) !important; }
 
-        footer {
+        /* Result/Copy Area */
+        .result-box {
+            display: none;
+            background: #f8fafc;
+            border: 2px dashed #e2e8f0;
+            border-radius: var(--radius-md);
+            padding: 20px;
             margin-top: 25px;
+            animation: slideUp 0.4s ease;
+        }
+
+        #url-text {
+            word-break: break-all;
             font-size: 12px;
+            color: #475569;
+            display: block;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .copy-btn { background: #1e293b; color: white; padding: 12px; font-size: 14px; }
+
+        footer {
+            margin-top: 30px;
+            font-size: 12px;
+            font-weight: 600;
             color: #94a3b8;
-            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
-    <div id="top-branding">RISHAV'S WEBSITE</div>
+    <div id="top-branding">RISHAV'S WEB HUB</div>
 
-    <div class="container">
-        <div id="creator" class="card">
-            <h2 style="color: var(--primary); margin-top: 0;">Locker Generator</h2>
-            <p style="color: #64748b; font-size: 14px;">Fill details to create your locked link</p>
-            
-            <input type="text" id="yt-input" placeholder="YouTube Channel URL">
-            <input type="text" id="ig-like-input" placeholder="Instagram Post URL">
-            <input type="text" id="ig-follow-input" placeholder="Instagram Profile URL">
-            <input type="text" id="target-input" placeholder="Target URL (to be unlocked)">
-            
-            <button class="btn gen-btn" onclick="generateLink()">
-                <i class="fas fa-magic"></i> Generate Link
+    <div class="main-container">
+        <div id="creator-section" class="card">
+            <h2>Locker Creator</h2>
+            <p>Generate a secure link locker in seconds.</p>
+
+            <div class="input-wrapper">
+                <i class="fab fa-youtube"></i>
+                <input type="text" id="yt-link" placeholder="YouTube Channel Link">
+            </div>
+            <div class="input-wrapper">
+                <i class="fas fa-heart"></i>
+                <input type="text" id="igl-link" placeholder="Instagram Post Link">
+            </div>
+            <div class="input-wrapper">
+                <i class="fab fa-instagram"></i>
+                <input type="text" id="igf-link" placeholder="Instagram Profile Link">
+            </div>
+            <div class="input-wrapper">
+                <i class="fas fa-link"></i>
+                <input type="text" id="target-link" placeholder="Destination (Secret) Link">
+            </div>
+
+            <button class="btn btn-gen" onclick="createLocker()">
+                <i class="fas fa-wand-magic-sparkles"></i> Generate Locker Link
             </button>
 
-            <div id="copy-area" class="copy-area">
-                <span id="output-url"></span>
-                <button class="btn copy-btn" id="copy-btn" onclick="copyToClipboard()">
+            <div id="result-box" class="result-box">
+                <span id="url-text"></span>
+                <button class="btn copy-btn" id="copy-btn" onclick="copyLink()">
                     <i class="fas fa-copy"></i> Copy Link
                 </button>
             </div>
-            <footer>Creator Tool by Rishav</footer>
+            <footer>TOOL CREATED BY RISHAV</footer>
         </div>
 
-        <div id="locker" class="card">
-            <h2 style="color: #334155; margin-top: 0;">Complete Steps</h2>
-            <div id="btn-container"></div>
+        <div id="locker-section" class="card" style="display: none;">
+            <h2>Complete Steps</h2>
+            <p>Support the creator to unlock your content.</p>
+            
+            <div id="steps-container"></div>
 
-            <a href="#" id="get-link" class="btn final-btn">
-                <i class="fas fa-unlock"></i> Get Your Link
+            <a href="#" id="unlock-btn" class="btn btn-unlock">
+                <i class="fas fa-lock-open"></i> Get Your Link
             </a>
-            <footer>Created by Rishav</footer>
+            <footer>WEBSITE BY RISHAV</footer>
         </div>
     </div>
 
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        
-        // CHECK MODE
-        if (urlParams.has('target')) {
-            document.getElementById('creator').style.display = 'none';
-            document.getElementById('locker').style.display = 'block';
+        const params = new URLSearchParams(window.location.search);
+
+        // Mode Switcher
+        if (params.has('dest')) {
+            document.getElementById('creator-section').style.display = 'none';
+            document.getElementById('locker-section').style.display = 'block';
             document.getElementById('top-branding').style.display = 'block';
-            setupLocker();
+            renderLocker();
         }
 
-        function generateLink() {
-            const yt = btoa(document.getElementById('yt-input').value || 'none');
-            const igl = btoa(document.getElementById('ig-like-input').value || 'none');
-            const igf = btoa(document.getElementById('ig-follow-input').value || 'none');
-            const target = btoa(document.getElementById('target-input').value || 'https://google.com');
+        function createLocker() {
+            const data = {
+                yt: btoa(document.getElementById('yt-link').value || 'none'),
+                igl: btoa(document.getElementById('igl-link').value || 'none'),
+                igf: btoa(document.getElementById('igf-link').value || 'none'),
+                dest: btoa(document.getElementById('target-link').value || 'https://google.com')
+            };
 
-            const baseUrl = window.location.href.split('?')[0];
-            const finalUrl = `${baseUrl}?yt=${yt}&igl=${igl}&igf=${igf}&target=${target}`;
+            const base = window.location.href.split('?')[0];
+            const final = `${base}?yt=${data.yt}&igl=${data.igl}&igf=${data.igf}&dest=${data.dest}`;
             
-            document.getElementById('copy-area').style.display = 'block';
-            document.getElementById('output-url').innerText = finalUrl;
+            document.getElementById('result-box').style.display = 'block';
+            document.getElementById('url-text').innerText = final;
         }
 
-        function copyToClipboard() {
-            const link = document.getElementById('output-url').innerText;
-            navigator.clipboard.writeText(link).then(() => {
+        function copyLink() {
+            const text = document.getElementById('url-text').innerText;
+            navigator.clipboard.writeText(text).then(() => {
                 const btn = document.getElementById('copy-btn');
+                btn.innerHTML = `<i class="fas fa-check"></i> Copied Successfully!`;
                 btn.style.background = "#10b981";
-                btn.innerHTML = `<i class="fas fa-check"></i> Copied!`;
                 setTimeout(() => {
-                    btn.style.background = "#1e293b";
                     btn.innerHTML = `<i class="fas fa-copy"></i> Copy Link`;
+                    btn.style.background = "#1e293b";
                 }, 2000);
             });
         }
 
-        function setupLocker() {
-            const config = [
-                { id: 'yt', name: 'Subscribe Channel', icon: 'fa-youtube', class: 'yt' },
-                { id: 'igl', name: 'Like on Instagram', icon: 'fa-heart', class: 'ig' },
-                { id: 'igf', name: 'Follow on Instagram', icon: 'fa-instagram', class: 'ig' }
+        function renderLocker() {
+            const steps = [
+                { id: 'yt', name: 'Subscribe Channel', icon: 'fa-youtube', class: 'btn-yt' },
+                { id: 'igl', name: 'Like Instagram Post', icon: 'fa-heart', class: 'btn-ig' },
+                { id: 'igf', name: 'Follow on Instagram', icon: 'fa-instagram', class: 'btn-ig' }
             ];
 
-            const container = document.getElementById('btn-container');
-            const targetUrl = atob(urlParams.get('target'));
-            let completedCount = 0;
-            let totalSteps = 0;
+            const container = document.getElementById('steps-container');
+            const dest = atob(params.get('dest'));
+            let activeSteps = 0;
+            let doneSteps = 0;
 
-            config.forEach(item => {
-                const rawLink = atob(urlParams.get(item.id));
-                if (rawLink !== 'none' && rawLink !== '') {
-                    totalSteps++;
+            steps.forEach(s => {
+                const link = atob(params.get(s.id));
+                if (link !== 'none' && link.trim() !== '') {
+                    activeSteps++;
                     const a = document.createElement('a');
-                    a.href = rawLink;
+                    a.href = link;
                     a.target = "_blank";
-                    a.className = `btn step-btn ${item.class}`;
-                    a.innerHTML = `<i class="fab ${item.icon}"></i> <span>${item.name}</span> <i class="fas fa-chevron-right"></i>`;
+                    a.className = `btn ${s.class}`;
+                    a.innerHTML = `<i class="fab ${s.icon}"></i> <span>${s.name}</span>`;
                     
                     a.onclick = function() {
-                        if(!this.classList.contains('completed')) {
+                        if (!this.classList.contains('completed')) {
                             this.classList.add('completed');
-                            this.querySelector('span').innerText = "Done!";
-                            completedCount++;
-                            if (completedCount === totalSteps) {
-                                const final = document.getElementById('get-link');
-                                final.classList.add('active');
-                                final.href = targetUrl;
+                            this.querySelector('span').innerText = "Step Verified";
+                            doneSteps++;
+                            if (doneSteps === activeSteps) {
+                                const mainBtn = document.getElementById('unlock-btn');
+                                mainBtn.classList.add('active');
+                                mainBtn.href = dest;
                             }
                         }
                     };
