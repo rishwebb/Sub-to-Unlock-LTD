@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sub4Unlock Premium | Created by Rishav</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -29,17 +29,19 @@
             align-items: center;
             min-height: 100vh;
             color: #1e293b;
+            padding: 10px; /* Buffer for mobile edges */
         }
 
-        /* Top Header for Viewers */
+        /* Top Header */
         #top-branding {
             display: none;
-            margin-top: 40px;
+            margin-top: 20px;
             font-weight: 800;
-            font-size: 1.5rem;
+            font-size: clamp(1.2rem, 5vw, 1.8rem); /* Fluid font size */
             color: var(--primary);
             text-transform: uppercase;
             letter-spacing: 2px;
+            text-align: center;
         }
 
         .main-container {
@@ -48,46 +50,46 @@
             align-items: center;
             flex-grow: 1;
             width: 100%;
-            padding: 20px;
+            max-width: 500px;
         }
 
         .card {
             background: white;
-            padding: 40px;
+            padding: clamp(20px, 8vw, 40px); /* Responsive padding */
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow);
             width: 100%;
-            max-width: 440px;
             text-align: center;
             border: 1px solid #f1f5f9;
+            box-sizing: border-box;
         }
 
-        h2 { font-weight: 800; margin-top: 0; font-size: 1.8rem; }
-        p { color: #64748b; margin-bottom: 30px; font-size: 0.95rem; }
+        h2 { font-weight: 800; margin-top: 0; font-size: clamp(1.4rem, 6vw, 1.8rem); }
+        p { color: #64748b; margin-bottom: 25px; font-size: clamp(0.85rem, 4vw, 0.95rem); }
 
-        /* Rounded Input Boxes */
+        /* Responsive Inputs */
         .input-wrapper {
             position: relative;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .input-wrapper i {
             position: absolute;
-            left: 18px;
+            left: 15px;
             top: 50%;
             transform: translateY(-50%);
             color: #94a3b8;
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
         input {
             width: 100%;
-            padding: 16px 16px 16px 50px;
+            padding: 14px 14px 14px 45px;
             border: 2px solid #f1f5f9;
             border-radius: var(--radius-md);
             outline: none;
             font-family: inherit;
-            font-size: 14px;
+            font-size: 16px; /* Prevents iOS auto-zoom */
             transition: all 0.3s ease;
             box-sizing: border-box;
             background: #fdfdfd;
@@ -95,11 +97,10 @@
 
         input:focus {
             border-color: var(--primary);
-            background: white;
             box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
         }
 
-        /* Buttons */
+        /* Responsive Buttons */
         .btn {
             cursor: pointer;
             border: none;
@@ -114,12 +115,14 @@
             gap: 12px;
             transition: all 0.3s ease;
             text-decoration: none;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
         }
 
-        .btn-gen { background: var(--primary); color: white; margin-top: 10px; }
-        .btn-gen:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4); }
+        /* Touch-friendly active state for mobile */
+        .btn:active { transform: scale(0.98); }
 
+        .btn-gen { background: var(--primary); color: white; margin-top: 10px; }
         .btn-yt { background: var(--yt); color: white; }
         .btn-ig { background: var(--ig); color: white; }
         
@@ -128,58 +131,53 @@
             color: white;
             opacity: 0.4;
             pointer-events: none;
-            margin-top: 20px;
+            margin-top: 15px;
         }
 
         .btn-unlock.active {
             opacity: 1;
             pointer-events: auto;
             background: linear-gradient(135deg, #6366f1, #a855f7);
-            animation: bounce 2s infinite;
         }
 
         .completed { background: var(--success) !important; }
 
-        /* Result/Copy Area */
         .result-box {
             display: none;
             background: #f8fafc;
             border: 2px dashed #e2e8f0;
             border-radius: var(--radius-md);
-            padding: 20px;
-            margin-top: 25px;
-            animation: slideUp 0.4s ease;
+            padding: 15px;
+            margin-top: 20px;
+            word-wrap: break-word;
         }
 
         #url-text {
             word-break: break-all;
-            font-size: 12px;
+            font-size: 11px;
             color: #475569;
             display: block;
-            margin-bottom: 15px;
-            padding: 10px;
+            margin-bottom: 12px;
+            padding: 8px;
             background: white;
             border-radius: 8px;
+            max-height: 80px;
+            overflow-y: auto;
         }
 
-        .copy-btn { background: #1e293b; color: white; padding: 12px; font-size: 14px; }
-
         footer {
-            margin-top: 30px;
-            font-size: 12px;
+            margin-top: 25px;
+            font-size: 11px;
             font-weight: 600;
             color: #94a3b8;
             letter-spacing: 1px;
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.03); }
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Small Screen Adjustments */
+        @media (max-width: 480px) {
+            .card { padding: 25px 20px; }
+            body { justify-content: flex-start; padding-top: 20px; }
+            .btn { padding: 14px; font-size: 14px; }
         }
     </style>
 </head>
@@ -190,7 +188,7 @@
     <div class="main-container">
         <div id="creator-section" class="card">
             <h2>Locker Creator</h2>
-            <p>Generate a secure link locker in seconds.</p>
+            <p>Generate a secure link locker.</p>
 
             <div class="input-wrapper">
                 <i class="fab fa-youtube"></i>
@@ -206,39 +204,38 @@
             </div>
             <div class="input-wrapper">
                 <i class="fas fa-link"></i>
-                <input type="text" id="target-link" placeholder="Destination (Secret) Link">
+                <input type="text" id="target-link" placeholder="Secret Destination Link">
             </div>
 
             <button class="btn btn-gen" onclick="createLocker()">
-                <i class="fas fa-wand-magic-sparkles"></i> Generate Locker Link
+                <i class="fas fa-magic"></i> Generate Link
             </button>
 
             <div id="result-box" class="result-box">
                 <span id="url-text"></span>
-                <button class="btn copy-btn" id="copy-btn" onclick="copyLink()">
+                <button class="btn btn-gen" style="background:#1e293b; padding:10px;" id="copy-btn" onclick="copyLink()">
                     <i class="fas fa-copy"></i> Copy Link
                 </button>
             </div>
-            <footer>TOOL CREATED BY RISHAV</footer>
+            <footer>CREATED BY RISHAV</footer>
         </div>
 
         <div id="locker-section" class="card" style="display: none;">
             <h2>Complete Steps</h2>
-            <p>Support the creator to unlock your content.</p>
+            <p>Support the creator to unlock content.</p>
             
             <div id="steps-container"></div>
 
             <a href="#" id="unlock-btn" class="btn btn-unlock">
                 <i class="fas fa-lock-open"></i> Get Your Link
             </a>
-            <footer>WEBSITE BY RISHAV</footer>
+            <footer>BY RISHAV</footer>
         </div>
     </div>
 
     <script>
         const params = new URLSearchParams(window.location.search);
 
-        // Mode Switcher
         if (params.has('dest')) {
             document.getElementById('creator-section').style.display = 'none';
             document.getElementById('locker-section').style.display = 'block';
@@ -253,10 +250,8 @@
                 igf: btoa(document.getElementById('igf-link').value || 'none'),
                 dest: btoa(document.getElementById('target-link').value || 'https://google.com')
             };
-
             const base = window.location.href.split('?')[0];
             const final = `${base}?yt=${data.yt}&igl=${data.igl}&igf=${data.igf}&dest=${data.dest}`;
-            
             document.getElementById('result-box').style.display = 'block';
             document.getElementById('url-text').innerText = final;
         }
@@ -265,7 +260,7 @@
             const text = document.getElementById('url-text').innerText;
             navigator.clipboard.writeText(text).then(() => {
                 const btn = document.getElementById('copy-btn');
-                btn.innerHTML = `<i class="fas fa-check"></i> Copied Successfully!`;
+                btn.innerHTML = `<i class="fas fa-check"></i> Copied!`;
                 btn.style.background = "#10b981";
                 setTimeout(() => {
                     btn.innerHTML = `<i class="fas fa-copy"></i> Copy Link`;
@@ -280,11 +275,9 @@
                 { id: 'igl', name: 'Like Instagram Post', icon: 'fa-heart', class: 'btn-ig' },
                 { id: 'igf', name: 'Follow on Instagram', icon: 'fa-instagram', class: 'btn-ig' }
             ];
-
             const container = document.getElementById('steps-container');
             const dest = atob(params.get('dest'));
-            let activeSteps = 0;
-            let doneSteps = 0;
+            let activeSteps = 0, doneSteps = 0;
 
             steps.forEach(s => {
                 const link = atob(params.get(s.id));
@@ -295,16 +288,14 @@
                     a.target = "_blank";
                     a.className = `btn ${s.class}`;
                     a.innerHTML = `<i class="fab ${s.icon}"></i> <span>${s.name}</span>`;
-                    
                     a.onclick = function() {
                         if (!this.classList.contains('completed')) {
                             this.classList.add('completed');
-                            this.querySelector('span').innerText = "Step Verified";
+                            this.querySelector('span').innerText = "Done!";
                             doneSteps++;
                             if (doneSteps === activeSteps) {
-                                const mainBtn = document.getElementById('unlock-btn');
-                                mainBtn.classList.add('active');
-                                mainBtn.href = dest;
+                                document.getElementById('unlock-btn').classList.add('active');
+                                document.getElementById('unlock-btn').href = dest;
                             }
                         }
                     };
