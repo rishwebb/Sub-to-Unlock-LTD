@@ -274,10 +274,6 @@
 
     <script>
         const params = new URLSearchParams(window.location.search);
-        
-        // Use the full query string to create a unique storage key for each specific link
-        const queryString = window.location.search;
-        const storageKey = "sub4unlock_v2_" + btoa(queryString).substring(0, 32);
 
         if (params.has('dest')) {
             document.getElementById('creator-section').style.display = 'none';
@@ -287,7 +283,6 @@
         }
 
         function generateLink() {
-            // Added a unique ID (Timestamp) so every "Generate" click creates a brand new unique link
             const data = {
                 ych: btoa(document.getElementById('yt-ch').value || 'none'),
                 yvd: btoa(document.getElementById('yt-vd').value || 'none'),
@@ -351,7 +346,8 @@
             const dest = atob(params.get('dest'));
             const msg = atob(params.get('msg') || 'bm9uZQ==');
 
-            let savedState = JSON.parse(localStorage.getItem(storageKey)) || [];
+            // Logic to save progress removed - starts empty on every load
+            let currentSessionState = [];
 
             if (msg !== 'none' && msg.trim() !== '') {
                 document.getElementById('msg-display').style.display = 'block';
@@ -374,20 +370,13 @@
                         btn.id = 'step-' + s.id;
                         btn.innerHTML = `<i class="fab ${s.icon}"></i> <span>${s.name}</span>`;
 
-                        if (savedState.includes(s.id)) {
-                            btn.classList.add('completed');
-                            btn.querySelector('span').innerText = "Done!";
-                            doneCount++;
-                        }
-
                         btn.onclick = function() {
                             if (!this.classList.contains('completed')) {
                                 this.classList.add('completed');
                                 this.querySelector('span').innerText = "Done!";
                                 
-                                if (!savedState.includes(s.id)) {
-                                    savedState.push(s.id);
-                                    localStorage.setItem(storageKey, JSON.stringify(savedState));
+                                if (!currentSessionState.includes(s.id)) {
+                                    currentSessionState.push(s.id);
                                 }
 
                                 doneCount++;
@@ -406,7 +395,6 @@
                     ub.href = dest;
                 }
             }
-            checkUnlock();
         }
     </script>
 </body>
