@@ -73,7 +73,7 @@
             margin-bottom: 20px;
             border: 1px dashed #cbd5e1;
         }
-        .edit-tool input { padding: 8px 12px; font-size: 12px; border: 1px solid #e2e8f0; }
+        .edit-tool input { padding: 8px 12px; font-size: 12px; border: 1px solid #e2e8f0; width: 100%; box-sizing: border-box; }
 
         .input-wrapper {
             position: relative;
@@ -274,6 +274,8 @@
 
     <script>
         const params = new URLSearchParams(window.location.search);
+        // Create a unique storage key based on the destination to prevent conflict between different lockers
+        const storageKey = params.has('dest') ? 'locker_state_' + params.get('dest').substring(0, 10) : 'none';
 
         if (params.has('dest')) {
             document.getElementById('creator-section').style.display = 'none';
@@ -345,12 +347,16 @@
             const dest = atob(params.get('dest'));
             const msg = atob(params.get('msg') || 'bm9uZQ==');
 
+            // Load saved state from LocalStorage
+            let savedState = JSON.parse(localStorage.getItem(storageKey)) || [];
+
             if (msg !== 'none' && msg.trim() !== '') {
                 document.getElementById('msg-display').style.display = 'block';
                 document.getElementById('msg-text').innerText = msg;
             }
 
-            let activeCount = 0, doneCount = 0;
+            let activeCount = 0;
+            let doneCount = 0;
 
             steps.forEach(s => {
                 const raw = params.get(s.id);
@@ -362,23 +368,46 @@
                         btn.href = link;
                         btn.target = "_blank";
                         btn.className = `btn ${s.class}`;
+                        btn.id = 'step-' + s.id;
                         btn.innerHTML = `<i class="fab ${s.icon}"></i> <span>${s.name}</span>`;
+
+                        // Check if this specific step was already completed
+                        if (savedState.includes(s.id)) {
+                            btn.classList.add('completed');
+                            btn.querySelector('span').innerText = "Done!";
+                            doneCount++;
+                        }
+
                         btn.onclick = function() {
                             if (!this.classList.contains('completed')) {
                                 this.classList.add('completed');
                                 this.querySelector('span').innerText = "Done!";
-                                doneCount++;
-                                if (doneCount === activeCount) {
-                                    const ub = document.getElementById('unlock-btn');
-                                    ub.classList.add('active');
-                                    ub.href = dest;
+                                
+                                // Save progress to LocalStorage
+                                if (!savedState.includes(s.id)) {
+                                    savedState.push(s.id);
+                                    localStorage.setItem(storageKey, JSON.stringify(savedState));
                                 }
+
+                                doneCount++;
+                                checkUnlock();
                             }
                         };
                         container.appendChild(btn);
                     }
                 }
             });
+
+            function checkUnlock() {
+                if (doneCount >= activeCount) {
+                    const ub = document.getElementById('unlock-btn');
+                    ub.classList.add('active');
+                    ub.href = dest;
+                }
+            }
+
+            // Run initial check in case tasks were already saved
+            checkUnlock();
         }
     </script>
 </body>
