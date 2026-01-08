@@ -274,8 +274,11 @@
 
     <script>
         const params = new URLSearchParams(window.location.search);
-        // Create a unique storage key based on the destination to prevent conflict between different lockers
-        const storageKey = params.has('dest') ? 'locker_state_' + params.get('dest').substring(0, 10) : 'none';
+        
+        // Generate a unique key for EACH specific locker using the full query string
+        // This ensures Link A and Link B never share data even if they point to the same destination.
+        const queryString = window.location.search;
+        const storageKey = "sub4unlock_v2_" + btoa(queryString).substring(0, 32);
 
         if (params.has('dest')) {
             document.getElementById('creator-section').style.display = 'none';
@@ -347,7 +350,7 @@
             const dest = atob(params.get('dest'));
             const msg = atob(params.get('msg') || 'bm9uZQ==');
 
-            // Load saved state from LocalStorage
+            // Load saved state specific to THIS UNIQUE LINK
             let savedState = JSON.parse(localStorage.getItem(storageKey)) || [];
 
             if (msg !== 'none' && msg.trim() !== '') {
@@ -371,7 +374,6 @@
                         btn.id = 'step-' + s.id;
                         btn.innerHTML = `<i class="fab ${s.icon}"></i> <span>${s.name}</span>`;
 
-                        // Check if this specific step was already completed
                         if (savedState.includes(s.id)) {
                             btn.classList.add('completed');
                             btn.querySelector('span').innerText = "Done!";
@@ -383,7 +385,6 @@
                                 this.classList.add('completed');
                                 this.querySelector('span').innerText = "Done!";
                                 
-                                // Save progress to LocalStorage
                                 if (!savedState.includes(s.id)) {
                                     savedState.push(s.id);
                                     localStorage.setItem(storageKey, JSON.stringify(savedState));
@@ -405,8 +406,6 @@
                     ub.href = dest;
                 }
             }
-
-            // Run initial check in case tasks were already saved
             checkUnlock();
         }
     </script>
