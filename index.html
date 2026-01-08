@@ -29,15 +29,14 @@
             align-items: center;
             min-height: 100vh;
             color: #1e293b;
-            padding: 10px; /* Buffer for mobile edges */
+            padding: 10px;
         }
 
-        /* Top Header */
         #top-branding {
             display: none;
             margin-top: 20px;
             font-weight: 800;
-            font-size: clamp(1.2rem, 5vw, 1.8rem); /* Fluid font size */
+            font-size: clamp(1.2rem, 5vw, 1.8rem);
             color: var(--primary);
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -55,7 +54,7 @@
 
         .card {
             background: white;
-            padding: clamp(20px, 8vw, 40px); /* Responsive padding */
+            padding: clamp(20px, 8vw, 40px);
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow);
             width: 100%;
@@ -67,7 +66,6 @@
         h2 { font-weight: 800; margin-top: 0; font-size: clamp(1.4rem, 6vw, 1.8rem); }
         p { color: #64748b; margin-bottom: 25px; font-size: clamp(0.85rem, 4vw, 0.95rem); }
 
-        /* Responsive Inputs */
         .input-wrapper {
             position: relative;
             margin-bottom: 12px;
@@ -82,25 +80,52 @@
             font-size: 1rem;
         }
 
-        input {
+        input, textarea {
             width: 100%;
             padding: 14px 14px 14px 45px;
             border: 2px solid #f1f5f9;
             border-radius: var(--radius-md);
             outline: none;
             font-family: inherit;
-            font-size: 16px; /* Prevents iOS auto-zoom */
+            font-size: 16px;
             transition: all 0.3s ease;
             box-sizing: border-box;
             background: #fdfdfd;
         }
 
-        input:focus {
+        textarea { height: 80px; padding-top: 14px; resize: none; }
+
+        input:focus, textarea:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
         }
 
-        /* Responsive Buttons */
+        /* Message Display Styling */
+        .message-box {
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+            text-align: left;
+            border-left: 4px solid var(--primary);
+            display: none;
+        }
+
+        .message-box label {
+            display: block;
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .message-content {
+            font-size: 14px;
+            color: #334155;
+            line-height: 1.5;
+        }
+
         .btn {
             cursor: pointer;
             border: none;
@@ -119,9 +144,7 @@
             box-sizing: border-box;
         }
 
-        /* Touch-friendly active state for mobile */
         .btn:active { transform: scale(0.98); }
-
         .btn-gen { background: var(--primary); color: white; margin-top: 10px; }
         .btn-yt { background: var(--yt); color: white; }
         .btn-ig { background: var(--ig); color: white; }
@@ -149,7 +172,6 @@
             border-radius: var(--radius-md);
             padding: 15px;
             margin-top: 20px;
-            word-wrap: break-word;
         }
 
         #url-text {
@@ -173,11 +195,9 @@
             letter-spacing: 1px;
         }
 
-        /* Small Screen Adjustments */
         @media (max-width: 480px) {
             .card { padding: 25px 20px; }
             body { justify-content: flex-start; padding-top: 20px; }
-            .btn { padding: 14px; font-size: 14px; }
         }
     </style>
 </head>
@@ -195,8 +215,8 @@
                 <input type="text" id="yt-link" placeholder="YouTube Channel Link">
             </div>
             <div class="input-wrapper">
-                <i class="fas fa-heart"></i>
-                <input type="text" id="igl-link" placeholder="Instagram Post Link">
+                <i class="fas fa-play-circle"></i>
+                <input type="text" id="yt-video" placeholder="YouTube Video Link">
             </div>
             <div class="input-wrapper">
                 <i class="fab fa-instagram"></i>
@@ -205,6 +225,10 @@
             <div class="input-wrapper">
                 <i class="fas fa-link"></i>
                 <input type="text" id="target-link" placeholder="Secret Destination Link">
+            </div>
+            <div class="input-wrapper">
+                <i class="fas fa-comment-alt"></i>
+                <textarea id="custom-msg" placeholder="Professional Message for Users..."></textarea>
             </div>
 
             <button class="btn btn-gen" onclick="createLocker()">
@@ -224,6 +248,11 @@
             <h2>Complete Steps</h2>
             <p>Support the creator to unlock content.</p>
             
+            <div id="msg-display" class="message-box">
+                <label>Note from creator</label>
+                <div class="message-content" id="msg-text"></div>
+            </div>
+
             <div id="steps-container"></div>
 
             <a href="#" id="unlock-btn" class="btn btn-unlock">
@@ -246,12 +275,13 @@
         function createLocker() {
             const data = {
                 yt: btoa(document.getElementById('yt-link').value || 'none'),
-                igl: btoa(document.getElementById('igl-link').value || 'none'),
+                ytv: btoa(document.getElementById('yt-video').value || 'none'),
                 igf: btoa(document.getElementById('igf-link').value || 'none'),
+                msg: btoa(document.getElementById('custom-msg').value || 'none'),
                 dest: btoa(document.getElementById('target-link').value || 'https://google.com')
             };
             const base = window.location.href.split('?')[0];
-            const final = `${base}?yt=${data.yt}&igl=${data.igl}&igf=${data.igf}&dest=${data.dest}`;
+            const final = `${base}?yt=${data.yt}&ytv=${data.ytv}&igf=${data.igf}&msg=${data.msg}&dest=${data.dest}`;
             document.getElementById('result-box').style.display = 'block';
             document.getElementById('url-text').innerText = final;
         }
@@ -272,36 +302,54 @@
         function renderLocker() {
             const steps = [
                 { id: 'yt', name: 'Subscribe Channel', icon: 'fa-youtube', class: 'btn-yt' },
-                { id: 'igl', name: 'Like Instagram Post', icon: 'fa-heart', class: 'btn-ig' },
+                { id: 'ytv', name: 'Like & Watch Video', icon: 'fa-play-circle', class: 'btn-yt' },
                 { id: 'igf', name: 'Follow on Instagram', icon: 'fa-instagram', class: 'btn-ig' }
             ];
+            
             const container = document.getElementById('steps-container');
             const dest = atob(params.get('dest'));
+            const customMsg = atob(params.get('msg') || 'bm9uZQ=='); // 'none' base64
+
+            // Display Message if exists
+            if (customMsg !== 'none' && customMsg.trim() !== '') {
+                document.getElementById('msg-display').style.display = 'block';
+                document.getElementById('msg-text').innerText = customMsg;
+            }
+
             let activeSteps = 0, doneSteps = 0;
 
             steps.forEach(s => {
-                const link = atob(params.get(s.id));
-                if (link !== 'none' && link.trim() !== '') {
-                    activeSteps++;
-                    const a = document.createElement('a');
-                    a.href = link;
-                    a.target = "_blank";
-                    a.className = `btn ${s.class}`;
-                    a.innerHTML = `<i class="fab ${s.icon}"></i> <span>${s.name}</span>`;
-                    a.onclick = function() {
-                        if (!this.classList.contains('completed')) {
-                            this.classList.add('completed');
-                            this.querySelector('span').innerText = "Done!";
-                            doneSteps++;
-                            if (doneSteps === activeSteps) {
-                                document.getElementById('unlock-btn').classList.add('active');
-                                document.getElementById('unlock-btn').href = dest;
+                const linkRaw = params.get(s.id);
+                if (linkRaw) {
+                    const link = atob(linkRaw);
+                    if (link !== 'none' && link.trim() !== '') {
+                        activeSteps++;
+                        const a = document.createElement('a');
+                        a.href = link;
+                        a.target = "_blank";
+                        a.className = `btn ${s.class}`;
+                        a.innerHTML = `<i class="fab ${s.icon}"></i> <span>${s.name}</span>`;
+                        a.onclick = function() {
+                            if (!this.classList.contains('completed')) {
+                                this.classList.add('completed');
+                                this.querySelector('span').innerText = "Done!";
+                                doneSteps++;
+                                if (doneSteps === activeSteps) {
+                                    document.getElementById('unlock-btn').classList.add('active');
+                                    document.getElementById('unlock-btn').href = dest;
+                                }
                             }
-                        }
-                    };
-                    container.appendChild(a);
+                        };
+                        container.appendChild(a);
+                    }
                 }
             });
+
+            // If no steps are added, auto-unlock
+            if (activeSteps === 0) {
+                document.getElementById('unlock-btn').classList.add('active');
+                document.getElementById('unlock-btn').href = dest;
+            }
         }
     </script>
 </body>
