@@ -275,8 +275,7 @@
     <script>
         const params = new URLSearchParams(window.location.search);
         
-        // Generate a unique key for EACH specific locker using the full query string
-        // This ensures Link A and Link B never share data even if they point to the same destination.
+        // Use the full query string to create a unique storage key for each specific link
         const queryString = window.location.search;
         const storageKey = "sub4unlock_v2_" + btoa(queryString).substring(0, 32);
 
@@ -288,16 +287,18 @@
         }
 
         function generateLink() {
+            // Added a unique ID (Timestamp) so every "Generate" click creates a brand new unique link
             const data = {
                 ych: btoa(document.getElementById('yt-ch').value || 'none'),
                 yvd: btoa(document.getElementById('yt-vd').value || 'none'),
                 ipr: btoa(document.getElementById('ig-pr').value || 'none'),
                 irl: btoa(document.getElementById('ig-rl').value || 'none'),
                 msg: btoa(document.getElementById('creator-msg').value || 'none'),
-                dest: btoa(document.getElementById('dest-url').value || 'https://google.com')
+                dest: btoa(document.getElementById('dest-url').value || 'https://google.com'),
+                uid: btoa(Date.now().toString()) 
             };
             const baseUrl = window.location.href.split('?')[0];
-            const finalLink = `${baseUrl}?ych=${data.ych}&yvd=${data.yvd}&ipr=${data.ipr}&irl=${data.irl}&msg=${data.msg}&dest=${data.dest}`;
+            const finalLink = `${baseUrl}?ych=${data.ych}&yvd=${data.yvd}&ipr=${data.ipr}&irl=${data.irl}&msg=${data.msg}&dest=${data.dest}&uid=${data.uid}`;
             
             document.getElementById('result-box').style.display = 'block';
             document.getElementById('url-text').innerText = finalLink;
@@ -350,7 +351,6 @@
             const dest = atob(params.get('dest'));
             const msg = atob(params.get('msg') || 'bm9uZQ==');
 
-            // Load saved state specific to THIS UNIQUE LINK
             let savedState = JSON.parse(localStorage.getItem(storageKey)) || [];
 
             if (msg !== 'none' && msg.trim() !== '') {
