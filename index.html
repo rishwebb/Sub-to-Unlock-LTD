@@ -66,6 +66,16 @@
         h2 { font-weight: 800; margin-top: 0; font-size: clamp(1.4rem, 6vw, 1.8rem); }
         p { color: #64748b; margin-bottom: 25px; font-size: clamp(0.85rem, 4vw, 0.95rem); }
 
+        /* Edit Tool Styling */
+        .edit-tool {
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px dashed #cbd5e1;
+        }
+        .edit-tool input { padding: 8px 12px; font-size: 12px; border: 1px solid #e2e8f0; }
+
         .input-wrapper {
             position: relative;
             margin-bottom: 12px;
@@ -93,42 +103,38 @@
             background: #fdfdfd;
         }
 
-        textarea { height: 70px; padding-top: 14px; resize: none; }
+        textarea { height: 90px; padding-top: 14px; resize: none; }
 
         input:focus, textarea:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
         }
 
-        /* Edit Section Styling */
-        .edit-box {
-            background: #f1f5f9;
-            padding: 10px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border: 1px solid #e2e8f0;
-        }
-        .edit-box input { padding: 10px; font-size: 12px; border-radius: 8px; }
-
-        /* Message Box Styling */
+        /* Professional Message Template */
         .message-box {
-            background: #f0f9ff;
-            padding: 15px;
+            background: #eff6ff;
+            padding: 18px;
             border-radius: var(--radius-md);
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             text-align: left;
-            border-left: 5px solid #0ea5e9;
+            border-left: 4px solid #3b82f6;
             display: none;
         }
         .message-box label {
             display: block;
-            font-size: 10px;
+            font-size: 11px;
             text-transform: uppercase;
             font-weight: 800;
-            color: #0ea5e9;
-            margin-bottom: 5px;
+            color: #3b82f6;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
         }
-        .message-content { font-size: 14px; color: #334155; line-height: 1.5; }
+        .message-content {
+            font-size: 14px;
+            color: #1e293b;
+            line-height: 1.6;
+            font-weight: 500;
+        }
 
         .btn {
             cursor: pointer;
@@ -207,43 +213,44 @@
     <div class="main-container">
         <div id="creator-section" class="card">
             <h2>Locker Creator</h2>
+            <p>Fill the links to generate your locker.</p>
             
-            <div class="edit-box">
-                <input type="text" id="import-url" placeholder="Paste link here to edit it..." oninput="importData()">
+            <div class="edit-tool">
+                <input type="text" id="import-url" placeholder="Paste generated link here to edit..." oninput="decodeLink()">
             </div>
 
             <div class="input-wrapper">
                 <i class="fab fa-youtube"></i>
-                <input type="text" id="yt-ch" placeholder="YouTube Channel Link">
+                <input type="text" id="yt-ch" placeholder="YouTube Channel (Subscribe)">
             </div>
             <div class="input-wrapper">
                 <i class="fas fa-play-circle"></i>
-                <input type="text" id="yt-vid" placeholder="YouTube Video Link">
+                <input type="text" id="yt-vd" placeholder="YouTube Video (Like)">
             </div>
             <div class="input-wrapper">
                 <i class="fab fa-instagram"></i>
-                <input type="text" id="ig-prof" placeholder="Instagram Profile Link">
+                <input type="text" id="ig-pr" placeholder="Instagram Profile (Follow)">
             </div>
             <div class="input-wrapper">
-                <i class="fas fa-heart"></i>
-                <input type="text" id="ig-post" placeholder="Instagram Post (Like) Link">
+                <i class="fas fa-film"></i>
+                <input type="text" id="ig-rl" placeholder="Instagram Reel (Like)">
             </div>
             <div class="input-wrapper">
                 <i class="fas fa-link"></i>
-                <input type="text" id="target-link" placeholder="Destination Link">
+                <input type="text" id="dest-url" placeholder="Destination Link (Final)">
             </div>
             <div class="input-wrapper">
-                <i class="fas fa-comment-dots"></i>
-                <textarea id="custom-msg" placeholder="Write a professional message..."></textarea>
+                <i class="fas fa-pen-nib"></i>
+                <textarea id="creator-msg" placeholder="Write a professional message for your audience..."></textarea>
             </div>
 
-            <button class="btn btn-gen" onclick="createLocker()">
-                <i class="fas fa-magic"></i> Generate Link
+            <button class="btn btn-gen" onclick="generateLink()">
+                <i class="fas fa-magic"></i> Create Link Locker
             </button>
 
             <div id="result-box" class="result-box">
                 <span id="url-text"></span>
-                <button class="btn btn-gen" style="background:#1e293b; padding:10px;" id="copy-btn" onclick="copyLink()">
+                <button class="btn btn-gen" style="background:#1e293b; padding:10px;" id="copy-btn" onclick="copyResult()">
                     <i class="fas fa-copy"></i> Copy Link
                 </button>
             </div>
@@ -252,66 +259,75 @@
 
         <div id="locker-section" class="card" style="display: none;">
             <h2>Complete Steps</h2>
-            <p>Support to unlock your destination.</p>
+            <p>Support the creator to access content.</p>
             
             <div id="msg-display" class="message-box">
-                <label>Message from creator</label>
+                <label>Note from Creator</label>
                 <div class="message-content" id="msg-text"></div>
             </div>
 
             <div id="steps-container"></div>
 
             <a href="#" id="unlock-btn" class="btn btn-unlock">
-                <i class="fas fa-lock-open"></i> Get Your Link
+                <i class="fas fa-lock-open"></i> Unlock Content
             </a>
-            <footer>BY RISHAV</footer>
+            <footer>POWERED BY RISHAV</footer>
         </div>
     </div>
 
     <script>
         const params = new URLSearchParams(window.location.search);
 
+        // Check if loading as a locker
         if (params.has('dest')) {
             document.getElementById('creator-section').style.display = 'none';
             document.getElementById('locker-section').style.display = 'block';
             document.getElementById('top-branding').style.display = 'block';
-            renderLocker();
+            initLocker();
         }
 
-        function createLocker() {
+        function generateLink() {
             const data = {
                 ych: btoa(document.getElementById('yt-ch').value || 'none'),
-                yvd: btoa(document.getElementById('yt-vid').value || 'none'),
-                ipr: btoa(document.getElementById('ig-prof').value || 'none'),
-                ipt: btoa(document.getElementById('ig-post').value || 'none'),
-                msg: btoa(document.getElementById('custom-msg').value || 'none'),
-                dest: btoa(document.getElementById('target-link').value || 'https://google.com')
+                yvd: btoa(document.getElementById('yt-vd').value || 'none'),
+                ipr: btoa(document.getElementById('ig-pr').value || 'none'),
+                irl: btoa(document.getElementById('ig-rl').value || 'none'),
+                msg: btoa(document.getElementById('creator-msg').value || 'none'),
+                dest: btoa(document.getElementById('dest-url').value || 'https://google.com')
             };
-            const base = window.location.href.split('?')[0];
-            const final = `${base}?ych=${data.ych}&yvd=${data.yvd}&ipr=${data.ipr}&ipt=${data.ipt}&msg=${data.msg}&dest=${data.dest}`;
+            const baseUrl = window.location.href.split('?')[0];
+            const finalLink = `${baseUrl}?ych=${data.ych}&yvd=${data.yvd}&ipr=${data.ipr}&irl=${data.irl}&msg=${data.msg}&dest=${data.dest}`;
+            
             document.getElementById('result-box').style.display = 'block';
-            document.getElementById('url-text').innerText = final;
-            window.scrollTo(0, document.body.scrollHeight);
+            document.getElementById('url-text').innerText = finalLink;
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         }
 
-        function importData() {
+        function decodeLink() {
             try {
-                const urlVal = document.getElementById('import-url').value;
-                if(!urlVal.includes('?')) return;
-                const p = new URLSearchParams(urlVal.split('?')[1]);
+                const val = document.getElementById('import-url').value;
+                if(!val.includes('?')) return;
+                const p = new URLSearchParams(val.split('?')[1]);
                 
-                if(p.has('ych')) document.getElementById('yt-ch').value = atob(p.get('ych')) === 'none' ? '' : atob(p.get('ych'));
-                if(p.has('yvd')) document.getElementById('yt-vid').value = atob(p.get('yvd')) === 'none' ? '' : atob(p.get('yvd'));
-                if(p.has('ipr')) document.getElementById('ig-prof').value = atob(p.get('ipr')) === 'none' ? '' : atob(p.get('ipr'));
-                if(p.has('ipt')) document.getElementById('ig-post').value = atob(p.get('ipt')) === 'none' ? '' : atob(p.get('ipt'));
-                if(p.has('msg')) document.getElementById('custom-msg').value = atob(p.get('msg')) === 'none' ? '' : atob(p.get('msg'));
-                if(p.has('dest')) document.getElementById('target-link').value = atob(p.get('dest'));
-            } catch(e) { console.log("Invalid link for import"); }
+                const setField = (id, param) => {
+                    if(p.has(param)) {
+                        const decoded = atob(p.get(param));
+                        document.getElementById(id).value = (decoded === 'none') ? '' : decoded;
+                    }
+                };
+
+                setField('yt-ch', 'ych');
+                setField('yt-vd', 'yvd');
+                setField('ig-pr', 'ipr');
+                setField('ig-rl', 'irl');
+                setField('creator-msg', 'msg');
+                setField('dest-url', 'dest');
+            } catch(e) { console.warn("Decoding failed"); }
         }
 
-        function copyLink() {
-            const text = document.getElementById('url-text').innerText;
-            navigator.clipboard.writeText(text).then(() => {
+        function copyResult() {
+            const txt = document.getElementById('url-text').innerText;
+            navigator.clipboard.writeText(txt).then(() => {
                 const btn = document.getElementById('copy-btn');
                 btn.innerHTML = `<i class="fas fa-check"></i> Copied!`;
                 btn.style.background = "#10b981";
@@ -322,48 +338,49 @@
             });
         }
 
-        function renderLocker() {
+        function initLocker() {
             const steps = [
                 { id: 'ych', name: 'Subscribe Channel', icon: 'fa-youtube', class: 'btn-yt' },
                 { id: 'yvd', name: 'Like YouTube Video', icon: 'fa-play-circle', class: 'btn-yt' },
                 { id: 'ipr', name: 'Follow on Instagram', icon: 'fa-instagram', class: 'btn-ig' },
-                { id: 'ipt', name: 'Like Instagram Post', icon: 'fa-heart', class: 'btn-ig' }
+                { id: 'irl', name: 'Like Instagram Reel', icon: 'fa-film', class: 'btn-ig' }
             ];
             
             const container = document.getElementById('steps-container');
             const dest = atob(params.get('dest'));
-            const customMsg = atob(params.get('msg') || 'bm9uZQ==');
+            const msg = atob(params.get('msg') || 'bm9uZQ==');
 
-            if (customMsg !== 'none' && customMsg.trim() !== '') {
+            if (msg !== 'none' && msg.trim() !== '') {
                 document.getElementById('msg-display').style.display = 'block';
-                document.getElementById('msg-text').innerText = customMsg;
+                document.getElementById('msg-text').innerText = msg;
             }
 
-            let activeSteps = 0, doneSteps = 0;
+            let activeCount = 0, doneCount = 0;
 
             steps.forEach(s => {
-                const linkRaw = params.get(s.id);
-                if (linkRaw) {
-                    const link = atob(linkRaw);
+                const raw = params.get(s.id);
+                if (raw) {
+                    const link = atob(raw);
                     if (link !== 'none' && link.trim() !== '') {
-                        activeSteps++;
-                        const a = document.createElement('a');
-                        a.href = link;
-                        a.target = "_blank";
-                        a.className = `btn ${s.class}`;
-                        a.innerHTML = `<i class="fab ${s.icon}"></i> <span>${s.name}</span>`;
-                        a.onclick = function() {
+                        activeCount++;
+                        const btn = document.createElement('a');
+                        btn.href = link;
+                        btn.target = "_blank";
+                        btn.className = `btn ${s.class}`;
+                        btn.innerHTML = `<i class="fab ${s.icon}"></i> <span>${s.name}</span>`;
+                        btn.onclick = function() {
                             if (!this.classList.contains('completed')) {
                                 this.classList.add('completed');
-                                this.querySelector('span').innerText = "Step Completed!";
-                                doneSteps++;
-                                if (doneSteps === activeSteps) {
-                                    document.getElementById('unlock-btn').classList.add('active');
-                                    document.getElementById('unlock-btn').href = dest;
+                                this.querySelector('span').innerText = "Done!";
+                                doneCount++;
+                                if (doneCount === activeCount) {
+                                    const ub = document.getElementById('unlock-btn');
+                                    ub.classList.add('active');
+                                    ub.href = dest;
                                 }
                             }
                         };
-                        container.appendChild(a);
+                        container.appendChild(btn);
                     }
                 }
             });
