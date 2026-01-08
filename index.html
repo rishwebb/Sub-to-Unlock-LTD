@@ -274,6 +274,11 @@
 
     <script>
         const params = new URLSearchParams(window.location.search);
+        
+        // Generate a unique key for EACH specific locker using the full query string
+        // This ensures Link A and Link B never share data even if they point to the same destination.
+        const queryString = window.location.search;
+        const storageKey = "sub4unlock_v2_" + btoa(queryString).substring(0, 32);
 
         if (params.has('dest')) {
             document.getElementById('creator-section').style.display = 'none';
@@ -289,11 +294,10 @@
                 ipr: btoa(document.getElementById('ig-pr').value || 'none'),
                 irl: btoa(document.getElementById('ig-rl').value || 'none'),
                 msg: btoa(document.getElementById('creator-msg').value || 'none'),
-                dest: btoa(document.getElementById('dest-url').value || 'https://google.com'),
-                uid: btoa(Date.now().toString()) 
+                dest: btoa(document.getElementById('dest-url').value || 'https://google.com')
             };
             const baseUrl = window.location.href.split('?')[0];
-            const finalLink = `${baseUrl}?ych=${data.ych}&yvd=${data.yvd}&ipr=${data.ipr}&irl=${data.irl}&msg=${data.msg}&dest=${data.dest}&uid=${data.uid}`;
+            const finalLink = `${baseUrl}?ych=${data.ych}&yvd=${data.yvd}&ipr=${data.ipr}&irl=${data.irl}&msg=${data.msg}&dest=${data.dest}`;
             
             document.getElementById('result-box').style.display = 'block';
             document.getElementById('url-text').innerText = finalLink;
@@ -346,8 +350,8 @@
             const dest = atob(params.get('dest'));
             const msg = atob(params.get('msg') || 'bm9uZQ==');
 
-            // Logic to save progress removed - starts empty on every load
-            let currentSessionState = [];
+            // Load saved state specific to THIS UNIQUE LINK
+            let savedState = JSON.parse(localStorage.getItem(storageKey)) || [];
 
             if (msg !== 'none' && msg.trim() !== '') {
                 document.getElementById('msg-display').style.display = 'block';
@@ -370,13 +374,20 @@
                         btn.id = 'step-' + s.id;
                         btn.innerHTML = `<i class="fab ${s.icon}"></i> <span>${s.name}</span>`;
 
+                        if (savedState.includes(s.id)) {
+                            btn.classList.add('completed');
+                            btn.querySelector('span').innerText = "Done!";
+                            doneCount++;
+                        }
+
                         btn.onclick = function() {
                             if (!this.classList.contains('completed')) {
                                 this.classList.add('completed');
                                 this.querySelector('span').innerText = "Done!";
                                 
-                                if (!currentSessionState.includes(s.id)) {
-                                    currentSessionState.push(s.id);
+                                if (!savedState.includes(s.id)) {
+                                    savedState.push(s.id);
+                                    localStorage.setItem(storageKey, JSON.stringify(savedState));
                                 }
 
                                 doneCount++;
@@ -395,6 +406,7 @@
                     ub.href = dest;
                 }
             }
+            checkUnlock();
         }
     </script>
 </body>
