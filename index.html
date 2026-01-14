@@ -279,6 +279,7 @@
         // This ensures Link A and Link B never share data even if they point to the same destination.
         const queryString = window.location.search;
         const storageKey = "sub4unlock_v2_" + btoa(queryString).substring(0, 32);
+        localStorage.removeItem(storageKey);
 
         if (params.has('dest')) {
             document.getElementById('creator-section').style.display = 'none';
