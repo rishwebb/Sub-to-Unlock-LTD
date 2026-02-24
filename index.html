@@ -3,44 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com data:; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests">
+    <meta name="referrer" content="no-referrer">
     <title>Sub4Unlock Premium | Created by Rishav</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" referrerpolicy="no-referrer">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Syne:wght@700;800&display=swap');
 
         :root {
-            --primary: #4f46e5;
-            --yt: #ff0000;
-            --ig: #e1306c;
-            --success: #10b981;
-            --radius-lg: 24px;
+            --brand: #0f766e;
+            --brand-deep: #115e59;
+            --accent: #ea580c;
+            --accent-soft: #fb923c;
+            --yt: #ef4444;
+            --ig: #ec4899;
+            --success: #16a34a;
+            --ink-1: #10232c;
+            --ink-2: #3f5561;
+            --card-bg: rgba(255, 255, 255, 0.78);
+            --line: rgba(16, 35, 44, 0.13);
+            --radius-lg: 28px;
             --radius-md: 16px;
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            --shadow: 0 24px 55px -30px rgba(16, 35, 44, 0.45);
         }
 
+        * { box-sizing: border-box; }
+
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Manrope', sans-serif;
             margin: 0;
-            background: #f8fafc;
-            background-image: radial-gradient(#cbd5e1 0.5px, transparent 0.5px);
-            background-size: 24px 24px;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            color: #1e293b;
-            padding: 10px;
+            color: var(--ink-1);
+            padding: 16px;
+            overflow-x: hidden;
+            background:
+                radial-gradient(circle at 15% 15%, rgba(56, 189, 248, 0.34), transparent 36%),
+                radial-gradient(circle at 85% 20%, rgba(251, 146, 60, 0.34), transparent 33%),
+                radial-gradient(circle at 60% 90%, rgba(20, 184, 166, 0.22), transparent 42%),
+                linear-gradient(160deg, #fffaf2 0%, #fff 42%, #f0fbfb 100%);
+            position: relative;
+        }
+
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            width: 340px;
+            height: 340px;
+            border-radius: 999px;
+            filter: blur(20px);
+            z-index: -1;
+            opacity: 0.45;
+            animation: blobFloat 12s ease-in-out infinite;
+        }
+
+        body::before {
+            top: -80px;
+            right: -80px;
+            background: linear-gradient(135deg, #fb923c, #facc15);
+        }
+
+        body::after {
+            bottom: -110px;
+            left: -90px;
+            background: linear-gradient(135deg, #22d3ee, #14b8a6);
+            animation-delay: -6s;
         }
 
         #top-branding {
             display: none;
             margin-top: 20px;
-            font-weight: 800;
-            font-size: clamp(1.2rem, 5vw, 1.8rem);
-            color: var(--primary);
+            margin-bottom: 10px;
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(1.15rem, 4.8vw, 1.8rem);
+            color: var(--brand-deep);
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             text-align: center;
+            text-shadow: 0 8px 24px rgba(17, 94, 89, 0.2);
+            animation: revealUp 0.7s ease both;
         }
 
         .main-container {
@@ -49,31 +93,60 @@
             align-items: center;
             flex-grow: 1;
             width: 100%;
-            max-width: 500px;
+            max-width: 620px;
         }
 
         .card {
-            background: white;
-            padding: clamp(20px, 8vw, 40px);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow);
             width: 100%;
             text-align: center;
-            border: 1px solid #f1f5f9;
-            box-sizing: border-box;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(11px);
+            -webkit-backdrop-filter: blur(11px);
+            padding: clamp(22px, 7vw, 42px);
+            animation: cardIn 0.65s cubic-bezier(0.2, 0.75, 0.28, 1) both;
         }
 
-        h2 { font-weight: 800; margin-top: 0; font-size: clamp(1.4rem, 6vw, 1.8rem); }
-        p { color: #64748b; margin-bottom: 25px; font-size: clamp(0.85rem, 4vw, 0.95rem); }
+        h2 {
+            margin: 0 0 8px;
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(1.42rem, 6vw, 2rem);
+            line-height: 1.1;
+            color: #0f2f3c;
+            letter-spacing: 0.4px;
+        }
+
+        p {
+            color: var(--ink-2);
+            margin: 0 0 26px;
+            font-size: clamp(0.88rem, 3.9vw, 0.98rem);
+            font-weight: 600;
+        }
+
+        .edit-tool,
+        .input-wrapper,
+        .btn,
+        .message-box,
+        .result-box {
+            animation: revealUp 0.55s ease both;
+        }
 
         .edit-tool {
-            background: #f1f5f9;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(241, 250, 253, 0.95));
             padding: 12px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border: 1px dashed #cbd5e1;
+            border-radius: 14px;
+            margin-bottom: 18px;
+            border: 1px dashed rgba(15, 118, 110, 0.35);
         }
-        .edit-tool input { padding: 8px 12px; font-size: 12px; border: 1px solid #e2e8f0; width: 100%; box-sizing: border-box; }
+
+        .edit-tool input {
+            padding: 10px 12px;
+            font-size: 12px;
+            border: 1px solid rgba(16, 35, 44, 0.14);
+            background: rgba(255, 255, 255, 0.9);
+        }
 
         .input-wrapper {
             position: relative;
@@ -82,124 +155,225 @@
 
         .input-wrapper i {
             position: absolute;
-            left: 15px;
+            left: 14px;
             top: 50%;
+            width: 22px;
+            height: 22px;
+            border-radius: 8px;
+            display: grid;
+            place-items: center;
             transform: translateY(-50%);
-            color: #94a3b8;
-            font-size: 1rem;
+            font-size: 0.84rem;
+            color: #0f766e;
+            background: rgba(15, 118, 110, 0.12);
         }
 
-        input, textarea {
+        input,
+        textarea {
             width: 100%;
-            padding: 14px 14px 14px 45px;
-            border: 2px solid #f1f5f9;
+            padding: 14px 14px 14px 46px;
+            border: 1px solid var(--line);
             border-radius: var(--radius-md);
             outline: none;
             font-family: inherit;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            box-sizing: border-box;
-            background: #fdfdfd;
+            font-size: 15px;
+            font-weight: 600;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+            background: rgba(255, 255, 255, 0.95);
+            color: #153340;
         }
 
-        textarea { height: 90px; padding-top: 14px; resize: none; }
+        input::placeholder,
+        textarea::placeholder {
+            color: #7b929d;
+            font-weight: 600;
+        }
 
-        input:focus, textarea:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        input:focus,
+        textarea:focus {
+            border-color: rgba(15, 118, 110, 0.62);
+            box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.12);
+            transform: translateY(-1px);
+        }
+
+        input[readonly] {
+            background: linear-gradient(135deg, rgba(237, 248, 247, 0.95), rgba(255, 255, 255, 0.95));
+            color: #0f766e;
+            border-color: rgba(15, 118, 110, 0.3);
+        }
+
+        textarea {
+            height: 96px;
+            padding-top: 13px;
+            resize: none;
         }
 
         .message-box {
-            background: #eff6ff;
+            background: linear-gradient(135deg, rgba(221, 245, 244, 0.94), rgba(255, 248, 236, 0.94));
             padding: 18px;
             border-radius: var(--radius-md);
             margin-bottom: 25px;
             text-align: left;
-            border-left: 4px solid #3b82f6;
+            border: 1px solid rgba(15, 118, 110, 0.22);
             display: none;
         }
+
         .message-box label {
             display: block;
             font-size: 11px;
             text-transform: uppercase;
             font-weight: 800;
-            color: #3b82f6;
+            color: var(--brand-deep);
+            letter-spacing: 1px;
             margin-bottom: 8px;
         }
+
         .message-content {
             font-size: 14px;
-            color: #1e293b;
-            line-height: 1.6;
-            font-weight: 500;
+            color: #0f2f3c;
+            line-height: 1.62;
+            font-weight: 600;
         }
 
         .btn {
             cursor: pointer;
             border: none;
-            border-radius: var(--radius-md);
-            padding: 16px;
+            border-radius: 14px;
+            padding: 15px;
             width: 100%;
-            font-weight: 600;
-            font-size: 15px;
+            font-weight: 800;
+            font-size: 14px;
+            letter-spacing: 0.2px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
-            transition: all 0.3s ease;
+            gap: 10px;
             text-decoration: none;
             margin-bottom: 10px;
-            box-sizing: border-box;
+            color: white;
+            transition: transform 0.18s ease, box-shadow 0.25s ease, filter 0.25s ease;
+            box-shadow: 0 12px 24px -16px rgba(16, 35, 44, 0.56);
         }
 
-        .btn:active { transform: scale(0.98); }
-        .btn-gen { background: var(--primary); color: white; margin-top: 10px; }
-        .btn-yt { background: var(--yt); color: white; }
-        .btn-ig { background: var(--ig); color: white; }
-        
+        .btn:hover {
+            transform: translateY(-1px);
+            filter: saturate(1.06);
+        }
+
+        .btn:active { transform: scale(0.985); }
+        .btn-gen {
+            margin-top: 10px;
+            background: linear-gradient(135deg, var(--accent), #f97316 45%, #fb923c);
+        }
+        .btn-yt { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .btn-ig { background: linear-gradient(135deg, #ec4899, #db2777); }
+
         .btn-unlock {
-            background: #6366f1;
-            color: white;
-            opacity: 0.4;
-            pointer-events: none;
             margin-top: 15px;
+            background: linear-gradient(135deg, #95a5ac, #7b8d96);
+            opacity: 0.45;
+            pointer-events: none;
         }
 
         .btn-unlock.active {
             opacity: 1;
             pointer-events: auto;
-            background: linear-gradient(135deg, #6366f1, #a855f7);
+            background: linear-gradient(135deg, #0f766e, #0d9488);
         }
 
-        .completed { background: var(--success) !important; }
+        .pending {
+            background: linear-gradient(135deg, #f59e0b, #f97316) !important;
+        }
+
+        .completed {
+            background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+        }
 
         .result-box {
             display: none;
-            background: #f8fafc;
-            border: 2px dashed #e2e8f0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 251, 251, 0.95));
+            border: 1px dashed rgba(15, 118, 110, 0.36);
             border-radius: var(--radius-md);
-            padding: 15px;
+            padding: 14px;
             margin-top: 20px;
         }
 
         #url-text {
             word-break: break-all;
-            font-size: 11px;
-            color: #475569;
+            font-size: 12px;
+            color: #284351;
             display: block;
             margin-bottom: 12px;
-            padding: 8px;
-            background: white;
-            border-radius: 8px;
-            max-height: 80px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            border: 1px solid rgba(16, 35, 44, 0.12);
+            max-height: 90px;
             overflow-y: auto;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+
+        #url-text::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #url-text::-webkit-scrollbar-thumb {
+            background: rgba(15, 118, 110, 0.35);
+            border-radius: 10px;
         }
 
         footer {
-            margin-top: 25px;
+            margin-top: 24px;
             font-size: 11px;
-            font-weight: 600;
-            color: #94a3b8;
-            letter-spacing: 1px;
+            font-weight: 800;
+            color: #557582;
+            letter-spacing: 1.6px;
+        }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(14px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes revealUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes blobFloat {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            50% { transform: translateY(18px) translateX(-14px); }
+        }
+
+        @media (max-width: 560px) {
+            body { padding: 10px; }
+            .card {
+                border-radius: 22px;
+                padding: 20px 16px 24px;
+            }
+            .btn {
+                padding: 14px;
+                font-size: 13px;
+            }
+            .input-wrapper i {
+                left: 12px;
+                width: 20px;
+                height: 20px;
+            }
+            input,
+            textarea {
+                font-size: 15px;
+                padding-left: 42px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation: none !important;
+                transition: none !important;
+            }
         }
     </style>
 </head>
@@ -210,7 +384,7 @@
     <div class="main-container">
         <div id="creator-section" class="card">
             <h2>Locker Creator</h2>
-            <p>Generate a secure link locker with 6 fields.</p>
+            <p>Generate a secure link locker with 5 fields.</p>
             
             <div class="edit-tool">
                 <input type="text" id="import-url" placeholder="Paste generated link here to edit..." oninput="decodeLink()">
@@ -218,27 +392,23 @@
 
             <div class="input-wrapper">
                 <i class="fab fa-youtube"></i>
-                <input type="text" id="yt-ch" placeholder="1. YouTube Channel Link">
+                <input type="text" id="yt-ch" value="https://www.youtube.com/@Bingxxo" readonly>
             </div>
             <div class="input-wrapper">
                 <i class="fas fa-play-circle"></i>
                 <input type="text" id="yt-vd" placeholder="2. YouTube Video Link">
             </div>
             <div class="input-wrapper">
-                <i class="fab fa-instagram"></i>
-                <input type="text" id="ig-pr" placeholder="3. Instagram Profile Link">
-            </div>
-            <div class="input-wrapper">
                 <i class="fas fa-film"></i>
-                <input type="text" id="ig-rl" placeholder="4. Instagram Reel Link">
+                <input type="text" id="ig-rl" placeholder="3. Instagram Reel Link">
             </div>
             <div class="input-wrapper">
                 <i class="fas fa-link"></i>
-                <input type="text" id="dest-url" placeholder="5. Secret Destination Link">
+                <input type="text" id="dest-url" placeholder="4. Secret Destination Link">
             </div>
             <div class="input-wrapper">
                 <i class="fas fa-comment-dots"></i>
-                <textarea id="creator-msg" placeholder="6. Professional Message for Users..."></textarea>
+                <textarea id="creator-msg" placeholder="5. Professional Message for Users..."></textarea>
             </div>
 
             <button class="btn btn-gen" onclick="generateLink()">
@@ -274,12 +444,71 @@
 
     <script>
         const params = new URLSearchParams(window.location.search);
-        
-        // Generate a unique key for EACH specific locker using the full query string
-        // This ensures Link A and Link B never share data even if they point to the same destination.
-        const queryString = window.location.search;
-        const storageKey = "sub4unlock_v2_" + btoa(queryString).substring(0, 32);
-        localStorage.removeItem(storageKey);
+        const canonicalParams = new URLSearchParams(window.location.search);
+        canonicalParams.sort();
+        const storageKey = "sub4unlock_v4_" + hashString(canonicalParams.toString());
+        const LOCKED_YT_CHANNEL_URL = "https://www.youtube.com/@Bingxxo";
+
+        function hashString(value) {
+            let hash = 5381;
+            for (let i = 0; i < value.length; i++) {
+                hash = ((hash << 5) + hash) + value.charCodeAt(i);
+                hash = hash >>> 0;
+            }
+            return hash.toString(16);
+        }
+
+        function getSavedState() {
+            try {
+                const parsedState = JSON.parse(localStorage.getItem(storageKey) || '[]');
+                return Array.isArray(parsedState) ? parsedState : [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function persistSavedState(savedState) {
+            try {
+                localStorage.setItem(storageKey, JSON.stringify(savedState));
+                return true;
+            } catch (error) {
+                return false;
+            }
+        }
+
+        function encodeBase64(value) {
+            const bytes = new TextEncoder().encode(value);
+            let binary = "";
+            bytes.forEach(byte => {
+                binary += String.fromCharCode(byte);
+            });
+            return btoa(binary);
+        }
+
+        function decodeBase64(value, fallback = "none") {
+            if (!value) return fallback;
+            try {
+                const binary = atob(value);
+                const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+                return new TextDecoder().decode(bytes);
+            } catch (error) {
+                return fallback;
+            }
+        }
+
+        function sanitizeHttpUrl(rawValue) {
+            const value = (rawValue || "").trim();
+            if (!value || value === "none") return "";
+            try {
+                const parsed = new URL(value);
+                if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+                    return parsed.href;
+                }
+            } catch (error) {
+                return "";
+            }
+            return "";
+        }
 
         if (params.has('dest')) {
             document.getElementById('creator-section').style.display = 'none';
@@ -289,16 +518,33 @@
         }
 
         function generateLink() {
+            const taskLinks = {
+                ych: sanitizeHttpUrl(LOCKED_YT_CHANNEL_URL),
+                yvd: sanitizeHttpUrl(document.getElementById('yt-vd').value),
+                irl: sanitizeHttpUrl(document.getElementById('ig-rl').value)
+            };
+            const destUrl = sanitizeHttpUrl(document.getElementById('dest-url').value);
+            const creatorMsg = document.getElementById('creator-msg').value.trim();
+
+            if (!Object.values(taskLinks).some(Boolean)) {
+                alert("Please add at least one task link.");
+                return;
+            }
+
+            if (!destUrl) {
+                alert("Please enter a valid destination link (http/https).");
+                return;
+            }
+
             const data = {
-                ych: btoa(document.getElementById('yt-ch').value || 'none'),
-                yvd: btoa(document.getElementById('yt-vd').value || 'none'),
-                ipr: btoa(document.getElementById('ig-pr').value || 'none'),
-                irl: btoa(document.getElementById('ig-rl').value || 'none'),
-                msg: btoa(document.getElementById('creator-msg').value || 'none'),
-                dest: btoa(document.getElementById('dest-url').value || 'https://google.com')
+                ych: encodeBase64(taskLinks.ych || 'none'),
+                yvd: encodeBase64(taskLinks.yvd || 'none'),
+                irl: encodeBase64(taskLinks.irl || 'none'),
+                msg: encodeBase64(creatorMsg || 'none'),
+                dest: encodeBase64(destUrl)
             };
             const baseUrl = window.location.href.split('?')[0];
-            const finalLink = `${baseUrl}?ych=${data.ych}&yvd=${data.yvd}&ipr=${data.ipr}&irl=${data.irl}&msg=${data.msg}&dest=${data.dest}`;
+            const finalLink = `${baseUrl}?${new URLSearchParams(data).toString()}`;
             
             document.getElementById('result-box').style.display = 'block';
             document.getElementById('url-text').innerText = finalLink;
@@ -306,28 +552,38 @@
 
         function decodeLink() {
             try {
-                const val = document.getElementById('import-url').value;
-                if(!val.includes('?')) return;
-                const p = new URLSearchParams(val.split('?')[1]);
+                const val = document.getElementById('import-url').value.trim();
+                if (!val) return;
+                let p;
+
+                try {
+                    p = new URL(val).searchParams;
+                } catch (error) {
+                    if (!val.includes('?')) return;
+                    p = new URLSearchParams(val.slice(val.indexOf('?')));
+                }
                 
                 const setField = (id, param) => {
                     if(p.has(param)) {
-                        const decoded = atob(p.get(param));
+                        const decoded = decodeBase64(p.get(param), 'none');
                         document.getElementById(id).value = (decoded === 'none') ? '' : decoded;
                     }
                 };
 
-                setField('yt-ch', 'ych');
+                document.getElementById('yt-ch').value = LOCKED_YT_CHANNEL_URL;
                 setField('yt-vd', 'yvd');
-                setField('ig-pr', 'ipr');
                 setField('ig-rl', 'irl');
                 setField('creator-msg', 'msg');
                 setField('dest-url', 'dest');
-            } catch(e) { console.warn("Decoding failed"); }
+            } catch(e) { console.warn("Decoding failed", e); }
         }
 
         function copyResult() {
             const txt = document.getElementById('url-text').innerText;
+            if (!navigator.clipboard || !navigator.clipboard.writeText) {
+                alert("Clipboard API is not available. Please copy manually from the box.");
+                return;
+            }
             navigator.clipboard.writeText(txt).then(() => {
                 const btn = document.getElementById('copy-btn');
                 btn.innerHTML = `<i class="fas fa-check"></i> Copied!`;
@@ -336,23 +592,22 @@
                     btn.innerHTML = `<i class="fas fa-copy"></i> Copy Link`;
                     btn.style.background = "#1e293b";
                 }, 2000);
+            }).catch(() => {
+                alert("Clipboard access failed. Please copy manually from the box.");
             });
         }
 
         function initLocker() {
             const steps = [
-                { id: 'ych', name: 'Subscribe Channel', icon: 'fa-youtube', class: 'btn-yt' },
-                { id: 'yvd', name: 'Like YouTube Video', icon: 'fa-play-circle', class: 'btn-yt' },
-                { id: 'ipr', name: 'Follow on Instagram', icon: 'fa-instagram', class: 'btn-ig' },
-                { id: 'irl', name: 'Like Instagram Reel', icon: 'fa-film', class: 'btn-ig' }
+                { id: 'ych', name: 'Subscribe Channel', iconClass: 'fab', icon: 'fa-youtube', class: 'btn-yt' },
+                { id: 'yvd', name: 'Like YouTube Video', iconClass: 'fas', icon: 'fa-play-circle', class: 'btn-yt' },
+                { id: 'irl', name: 'Like Instagram Reel', iconClass: 'fas', icon: 'fa-film', class: 'btn-ig' }
             ];
             
             const container = document.getElementById('steps-container');
-            const dest = atob(params.get('dest'));
-            const msg = atob(params.get('msg') || 'bm9uZQ==');
-
-            // Load saved state specific to THIS UNIQUE LINK
-            let savedState = JSON.parse(localStorage.getItem(storageKey)) || [];
+            const dest = sanitizeHttpUrl(decodeBase64(params.get('dest'), ''));
+            const msg = decodeBase64(params.get('msg') || '', 'none');
+            let savedState = getSavedState();
 
             if (msg !== 'none' && msg.trim() !== '') {
                 document.getElementById('msg-display').style.display = 'block';
@@ -361,50 +616,110 @@
 
             let activeCount = 0;
             let doneCount = 0;
+            const pendingSteps = new Map();
+            const RETURN_DELAY_MS = 700;
+
+            function markStepComplete(stepId, button) {
+                if (button.classList.contains('completed')) return;
+                button.classList.remove('pending');
+                button.classList.add('completed');
+                button.querySelector('span').innerText = "Done!";
+
+                if (!savedState.includes(stepId)) {
+                    savedState.push(stepId);
+                    if (!persistSavedState(savedState)) {
+                        savedState = getSavedState();
+                    }
+                }
+
+                doneCount++;
+                checkUnlock();
+            }
+
+            function confirmPendingSteps() {
+                const now = Date.now();
+                pendingSteps.forEach((state, stepId) => {
+                    if (!state.leftPage) return;
+                    if ((now - state.startedAt) < RETURN_DELAY_MS) return;
+                    pendingSteps.delete(stepId);
+                    markStepComplete(stepId, state.button);
+                });
+            }
+
+            window.addEventListener('blur', () => {
+                pendingSteps.forEach(state => {
+                    state.leftPage = true;
+                });
+            });
+
+            window.addEventListener('focus', confirmPendingSteps);
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'hidden') {
+                    pendingSteps.forEach(state => {
+                        state.leftPage = true;
+                    });
+                }
+                if (document.visibilityState === 'visible') {
+                    confirmPendingSteps();
+                }
+            });
 
             steps.forEach(s => {
                 const raw = params.get(s.id);
-                if (raw) {
-                    const link = atob(raw);
-                    if (link !== 'none' && link.trim() !== '') {
-                        activeCount++;
-                        const btn = document.createElement('a');
-                        btn.href = link;
-                        btn.target = "_blank";
-                        btn.className = `btn ${s.class}`;
-                        btn.id = 'step-' + s.id;
-                        btn.innerHTML = `<i class="fab ${s.icon}"></i> <span>${s.name}</span>`;
+                const link = s.id === 'ych'
+                    ? sanitizeHttpUrl(LOCKED_YT_CHANNEL_URL)
+                    : sanitizeHttpUrl(decodeBase64(raw, 'none'));
+                if (link !== '') {
+                    activeCount++;
+                    const btn = document.createElement('a');
+                    btn.href = link;
+                    btn.target = "_blank";
+                    btn.rel = "noopener noreferrer";
+                    btn.className = `btn ${s.class}`;
+                    btn.id = 'step-' + s.id;
+                    btn.innerHTML = `<i class="${s.iconClass} ${s.icon}"></i> <span>${s.name}</span>`;
 
-                        if (savedState.includes(s.id)) {
-                            btn.classList.add('completed');
-                            btn.querySelector('span').innerText = "Done!";
-                            doneCount++;
-                        }
-
-                        btn.onclick = function() {
-                            if (!this.classList.contains('completed')) {
-                                this.classList.add('completed');
-                                this.querySelector('span').innerText = "Done!";
-                                
-                                if (!savedState.includes(s.id)) {
-                                    savedState.push(s.id);
-                                    localStorage.setItem(storageKey, JSON.stringify(savedState));
-                                }
-
-                                doneCount++;
-                                checkUnlock();
-                            }
-                        };
-                        container.appendChild(btn);
+                    if (savedState.includes(s.id)) {
+                        btn.classList.add('completed');
+                        btn.querySelector('span').innerText = "Done!";
+                        doneCount++;
                     }
+
+                    btn.onclick = function() {
+                        if (!this.classList.contains('completed')) {
+                            this.classList.add('pending');
+                            this.querySelector('span').innerText = "Return to confirm...";
+                            pendingSteps.set(s.id, {
+                                button: this,
+                                startedAt: Date.now(),
+                                leftPage: false
+                            });
+                        }
+                    };
+                    container.appendChild(btn);
                 }
             });
 
             function checkUnlock() {
+                const ub = document.getElementById('unlock-btn');
+                if (!dest) {
+                    ub.classList.remove('active');
+                    ub.href = "#";
+                    ub.innerHTML = `<i class="fas fa-lock"></i> Invalid Destination`;
+                    return;
+                }
+
+                if (activeCount === 0) {
+                    ub.classList.remove('active');
+                    ub.href = "#";
+                    ub.innerHTML = `<i class="fas fa-lock"></i> No Tasks Configured`;
+                    return;
+                }
+
                 if (doneCount >= activeCount) {
-                    const ub = document.getElementById('unlock-btn');
                     ub.classList.add('active');
                     ub.href = dest;
+                    ub.innerHTML = `<i class="fas fa-lock-open"></i> Unlock Content`;
                 }
             }
             checkUnlock();
