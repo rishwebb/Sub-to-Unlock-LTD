@@ -428,22 +428,22 @@
             <div class="input-wrapper has-toggle">
                 <i class="fab fa-youtube"></i>
                 <input type="text" id="yt-ch" value="https://www.youtube.com/@Bingxxo" readonly>
-                <button type="button" class="task-toggle" data-task-id="ych" onclick="toggleTaskPause('ych')"><i class="fas fa-pause"></i> Pause</button>
+                <button type="button" class="task-toggle" data-task-id="ych" onclick="toggleTaskPause('ych')">Pause</button>
             </div>
             <div class="input-wrapper has-toggle">
                 <i class="fab fa-instagram"></i>
                 <input type="text" id="ig-fl" value="https://www.instagram.com/erro_rcodee/" readonly>
-                <button type="button" class="task-toggle" data-task-id="ifl" onclick="toggleTaskPause('ifl')"><i class="fas fa-pause"></i> Pause</button>
+                <button type="button" class="task-toggle" data-task-id="ifl" onclick="toggleTaskPause('ifl')">Pause</button>
             </div>
             <div class="input-wrapper has-toggle">
                 <i class="fas fa-play-circle"></i>
                 <input type="text" id="yt-vd" placeholder="3. YouTube Video Link">
-                <button type="button" class="task-toggle" data-task-id="yvd" onclick="toggleTaskPause('yvd')"><i class="fas fa-pause"></i> Pause</button>
+                <button type="button" class="task-toggle" data-task-id="yvd" onclick="toggleTaskPause('yvd')">Pause</button>
             </div>
             <div class="input-wrapper has-toggle">
                 <i class="fas fa-film"></i>
                 <input type="text" id="ig-rl" placeholder="4. Instagram Reel Link">
-                <button type="button" class="task-toggle" data-task-id="irl" onclick="toggleTaskPause('irl')"><i class="fas fa-pause"></i> Pause</button>
+                <button type="button" class="task-toggle" data-task-id="irl" onclick="toggleTaskPause('irl')">Pause</button>
             </div>
             <div class="input-wrapper">
                 <i class="fas fa-link"></i>
@@ -560,9 +560,7 @@
             const toggleButton = document.querySelector(`.task-toggle[data-task-id="${taskId}"]`);
             if (!toggleButton) return;
             toggleButton.classList.toggle('paused', shouldPause);
-            toggleButton.innerHTML = shouldPause
-                ? `<i class="fas fa-play"></i> Resume`
-                : `<i class="fas fa-pause"></i> Pause`;
+            toggleButton.textContent = shouldPause ? "Resume" : "Pause";
         }
 
         function isTaskPaused(taskId) {
