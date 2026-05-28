@@ -493,6 +493,7 @@
         const LOCKED_YT_CHANNEL_URL = "https://www.youtube.com/@Bingxxo";
         const LOCKED_IG_FOLLOW_URL = "https://www.instagram.com/erro_rcodee/";
         const TASK_IDS = ['ych', 'ifl', 'yvd', 'irl'];
+        const PAUSED_TASK_TOKEN = "__paused__";
 
         function hashString(value) {
             let hash = 5381;
@@ -552,28 +553,28 @@
             } catch (error) {
                 return "";
             }
-
-            function setTaskPaused(taskId, shouldPause) {
-                const toggleButton = document.querySelector(`.task-toggle[data-task-id="${taskId}"]`);
-                if (!toggleButton) return;
-                toggleButton.classList.toggle('paused', shouldPause);
-                toggleButton.innerHTML = shouldPause
-                    ? `<i class="fas fa-play"></i> Resume`
-                    : `<i class="fas fa-pause"></i> Pause`;
-            }
-
-            function isTaskPaused(taskId) {
-                const toggleButton = document.querySelector(`.task-toggle[data-task-id="${taskId}"]`);
-                return Boolean(toggleButton && toggleButton.classList.contains('paused'));
-            }
-
-            function toggleTaskPause(taskId) {
-                setTaskPaused(taskId, !isTaskPaused(taskId));
-            }
-
-            TASK_IDS.forEach(taskId => setTaskPaused(taskId, false));
             return "";
         }
+
+        function setTaskPaused(taskId, shouldPause) {
+            const toggleButton = document.querySelector(`.task-toggle[data-task-id="${taskId}"]`);
+            if (!toggleButton) return;
+            toggleButton.classList.toggle('paused', shouldPause);
+            toggleButton.innerHTML = shouldPause
+                ? `<i class="fas fa-play"></i> Resume`
+                : `<i class="fas fa-pause"></i> Pause`;
+        }
+
+        function isTaskPaused(taskId) {
+            const toggleButton = document.querySelector(`.task-toggle[data-task-id="${taskId}"]`);
+            return Boolean(toggleButton && toggleButton.classList.contains('paused'));
+        }
+
+        function toggleTaskPause(taskId) {
+            setTaskPaused(taskId, !isTaskPaused(taskId));
+        }
+
+        TASK_IDS.forEach(taskId => setTaskPaused(taskId, false));
 
         if (params.has('dest')) {
             document.getElementById('creator-section').style.display = 'none';
@@ -591,12 +592,13 @@
             };
             const taskLinks = {};
             TASK_IDS.forEach(taskId => {
-                taskLinks[taskId] = isTaskPaused(taskId) ? '' : (baseTaskLinks[taskId] || '');
+                taskLinks[taskId] = isTaskPaused(taskId) ? PAUSED_TASK_TOKEN : (baseTaskLinks[taskId] || '');
             });
             const destUrl = sanitizeHttpUrl(document.getElementById('dest-url').value);
             const creatorMsg = document.getElementById('creator-msg').value.trim();
+            const hasAtLeastOneTask = TASK_IDS.some(taskId => !isTaskPaused(taskId) && Boolean(baseTaskLinks[taskId]));
 
-            if (!Object.values(taskLinks).some(Boolean)) {
+            if (!hasAtLeastOneTask) {
                 alert("Please add at least one task link.");
                 return;
             }
@@ -637,7 +639,7 @@
                 const setField = (id, param) => {
                     if(p.has(param)) {
                         const decoded = decodeBase64(p.get(param), 'none');
-                        document.getElementById(id).value = (decoded === 'none') ? '' : decoded;
+                        document.getElementById(id).value = (decoded === 'none' || decoded === PAUSED_TASK_TOKEN) ? '' : decoded;
                     }
                 };
 
@@ -649,7 +651,7 @@
                 setField('dest-url', 'dest');
                 TASK_IDS.forEach(taskId => {
                     const decoded = decodeBase64(p.get(taskId), 'none');
-                    setTaskPaused(taskId, decoded === 'none');
+                    setTaskPaused(taskId, decoded === PAUSED_TASK_TOKEN);
                 });
             } catch(e) { console.warn("Decoding failed", e); }
         }
@@ -766,11 +768,7 @@
 
             steps.forEach(s => {
                 const raw = params.get(s.id);
-                const link = s.id === 'ych'
-                    ? sanitizeHttpUrl(LOCKED_YT_CHANNEL_URL)
-                    : s.id === 'ifl'
-                        ? sanitizeHttpUrl(LOCKED_IG_FOLLOW_URL)
-                        : sanitizeHttpUrl(decodeBase64(raw, 'none'));
+                const link = sanitizeHttpUrl(decodeBase64(raw, 'none'));
                 if (link !== '') {
                     activeCount++;
                     const btn = document.createElement('a');
