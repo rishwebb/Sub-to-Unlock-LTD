@@ -15,6 +15,7 @@ Creators can generate task-based unlock links, and users must complete social st
 - Per-link progress memory using `localStorage` (same link stays completed on revisit).
 - Different generated links require fresh completion.
 - Locked YouTube channel step is fixed to `https://www.youtube.com/@Bingxxo`.
+- Locked Instagram follow step is fixed to `https://www.instagram.com/erro_rcodee/`.
 - URL sanitization for task and destination links (`http/https` only).
 - Safe decode and storage handling to reduce runtime errors.
 
@@ -79,6 +80,7 @@ const LOCKED_YT_CHANNEL_URL = "https://www.youtube.com/@Bingxxo";
 ### Tasks currently in flow
 
 - Subscribe Channel (locked channel URL)
+- Follow on Instagram (locked profile URL)
 - Like YouTube Video
 - Like Instagram Reel
 
