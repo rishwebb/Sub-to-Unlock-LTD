@@ -14,6 +14,8 @@ Creators can generate task-based unlock links, and users must complete social st
 - One-file architecture (`index.html`) for easy hosting.
 - Per-link progress memory using `localStorage` (same link stays completed on revisit).
 - Different generated links require fresh completion.
+- Per-task pause/resume controls in creator mode to include only selected steps in generated links.
+- On return from a task, buttons show a visual "Verifying task..." spinner for a randomized 2-4 seconds before marking done.
 - Locked YouTube channel step is fixed to `https://www.youtube.com/@Bingxxo`.
 - Locked Instagram follow step is fixed to `https://www.instagram.com/erro_rcodee/`.
 - URL sanitization for task and destination links (`http/https` only).
@@ -83,6 +85,8 @@ const LOCKED_YT_CHANNEL_URL = "https://www.youtube.com/@Bingxxo";
 - Follow on Instagram (locked profile URL)
 - Like YouTube Video
 - Like Instagram Reel
+
+Any task can be paused from creator mode; paused tasks are excluded from the generated link.
 
 ## Security Notes
 
