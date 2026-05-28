@@ -168,6 +168,36 @@
             background: rgba(15, 118, 110, 0.12);
         }
 
+        .input-wrapper.has-toggle input {
+            padding-right: 108px;
+        }
+
+        .task-toggle {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 1px solid rgba(16, 35, 44, 0.16);
+            background: rgba(255, 255, 255, 0.95);
+            color: #0f2f3c;
+            border-radius: 10px;
+            padding: 8px 10px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.2px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .task-toggle.paused {
+            background: #f59e0b;
+            color: #fff;
+            border-color: rgba(245, 158, 11, 0.5);
+        }
+
         input,
         textarea {
             width: 100%;
@@ -285,6 +315,11 @@
             background: linear-gradient(135deg, #f59e0b, #f97316) !important;
         }
 
+        .verifying {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7) !important;
+            pointer-events: none;
+        }
+
         .completed {
             background: linear-gradient(135deg, #22c55e, #16a34a) !important;
         }
@@ -390,21 +425,25 @@
                 <input type="text" id="import-url" placeholder="Paste generated link here to edit..." oninput="decodeLink()">
             </div>
 
-            <div class="input-wrapper">
+            <div class="input-wrapper has-toggle">
                 <i class="fab fa-youtube"></i>
                 <input type="text" id="yt-ch" value="https://www.youtube.com/@Bingxxo" readonly>
+                <button type="button" class="task-toggle" data-task-id="ych" onclick="toggleTaskPause('ych')"><i class="fas fa-pause"></i> Pause</button>
             </div>
-            <div class="input-wrapper">
+            <div class="input-wrapper has-toggle">
                 <i class="fab fa-instagram"></i>
                 <input type="text" id="ig-fl" value="https://www.instagram.com/erro_rcodee/" readonly>
+                <button type="button" class="task-toggle" data-task-id="ifl" onclick="toggleTaskPause('ifl')"><i class="fas fa-pause"></i> Pause</button>
             </div>
-            <div class="input-wrapper">
+            <div class="input-wrapper has-toggle">
                 <i class="fas fa-play-circle"></i>
                 <input type="text" id="yt-vd" placeholder="3. YouTube Video Link">
+                <button type="button" class="task-toggle" data-task-id="yvd" onclick="toggleTaskPause('yvd')"><i class="fas fa-pause"></i> Pause</button>
             </div>
-            <div class="input-wrapper">
+            <div class="input-wrapper has-toggle">
                 <i class="fas fa-film"></i>
                 <input type="text" id="ig-rl" placeholder="4. Instagram Reel Link">
+                <button type="button" class="task-toggle" data-task-id="irl" onclick="toggleTaskPause('irl')"><i class="fas fa-pause"></i> Pause</button>
             </div>
             <div class="input-wrapper">
                 <i class="fas fa-link"></i>
@@ -453,6 +492,7 @@
         const storageKey = "sub4unlock_v4_" + hashString(canonicalParams.toString());
         const LOCKED_YT_CHANNEL_URL = "https://www.youtube.com/@Bingxxo";
         const LOCKED_IG_FOLLOW_URL = "https://www.instagram.com/erro_rcodee/";
+        const TASK_IDS = ['ych', 'ifl', 'yvd', 'irl'];
 
         function hashString(value) {
             let hash = 5381;
@@ -512,6 +552,26 @@
             } catch (error) {
                 return "";
             }
+
+            function setTaskPaused(taskId, shouldPause) {
+                const toggleButton = document.querySelector(`.task-toggle[data-task-id="${taskId}"]`);
+                if (!toggleButton) return;
+                toggleButton.classList.toggle('paused', shouldPause);
+                toggleButton.innerHTML = shouldPause
+                    ? `<i class="fas fa-play"></i> Resume`
+                    : `<i class="fas fa-pause"></i> Pause`;
+            }
+
+            function isTaskPaused(taskId) {
+                const toggleButton = document.querySelector(`.task-toggle[data-task-id="${taskId}"]`);
+                return Boolean(toggleButton && toggleButton.classList.contains('paused'));
+            }
+
+            function toggleTaskPause(taskId) {
+                setTaskPaused(taskId, !isTaskPaused(taskId));
+            }
+
+            TASK_IDS.forEach(taskId => setTaskPaused(taskId, false));
             return "";
         }
 
@@ -523,12 +583,16 @@
         }
 
         function generateLink() {
-            const taskLinks = {
+            const baseTaskLinks = {
                 ych: sanitizeHttpUrl(LOCKED_YT_CHANNEL_URL),
                 ifl: sanitizeHttpUrl(LOCKED_IG_FOLLOW_URL),
                 yvd: sanitizeHttpUrl(document.getElementById('yt-vd').value),
                 irl: sanitizeHttpUrl(document.getElementById('ig-rl').value)
             };
+            const taskLinks = {};
+            TASK_IDS.forEach(taskId => {
+                taskLinks[taskId] = isTaskPaused(taskId) ? '' : (baseTaskLinks[taskId] || '');
+            });
             const destUrl = sanitizeHttpUrl(document.getElementById('dest-url').value);
             const creatorMsg = document.getElementById('creator-msg').value.trim();
 
@@ -583,6 +647,10 @@
                 setField('ig-rl', 'irl');
                 setField('creator-msg', 'msg');
                 setField('dest-url', 'dest');
+                TASK_IDS.forEach(taskId => {
+                    const decoded = decodeBase64(p.get(taskId), 'none');
+                    setTaskPaused(taskId, decoded === 'none');
+                });
             } catch(e) { console.warn("Decoding failed", e); }
         }
 
@@ -626,12 +694,18 @@
             let activeCount = 0;
             let doneCount = 0;
             const pendingSteps = new Map();
-            const RETURN_DELAY_MS = 700;
+            const MIN_VERIFY_DELAY_MS = 2000;
+            const MAX_VERIFY_DELAY_MS = 4000;
 
             function markStepComplete(stepId, button) {
                 if (button.classList.contains('completed')) return;
+                const icon = button.querySelector('i');
                 button.classList.remove('pending');
+                button.classList.remove('verifying');
                 button.classList.add('completed');
+                if (icon) {
+                    icon.className = "fas fa-check-circle";
+                }
                 button.querySelector('span').innerText = "Done!";
 
                 if (!savedState.includes(stepId)) {
@@ -645,13 +719,30 @@
                 checkUnlock();
             }
 
+            function getVerifyDelayMs() {
+                return Math.floor(Math.random() * (MAX_VERIFY_DELAY_MS - MIN_VERIFY_DELAY_MS + 1)) + MIN_VERIFY_DELAY_MS;
+            }
+
+            function startVisualVerification(stepId, button) {
+                if (button.classList.contains('completed') || button.classList.contains('verifying')) return;
+                const icon = button.querySelector('i');
+                button.classList.remove('pending');
+                button.classList.add('verifying');
+                if (icon) {
+                    icon.className = "fas fa-spinner fa-spin";
+                }
+                button.querySelector('span').innerText = "Verifying task...";
+                const verifyDelay = getVerifyDelayMs();
+                window.setTimeout(() => {
+                    markStepComplete(stepId, button);
+                }, verifyDelay);
+            }
+
             function confirmPendingSteps() {
-                const now = Date.now();
                 pendingSteps.forEach((state, stepId) => {
                     if (!state.leftPage) return;
-                    if ((now - state.startedAt) < RETURN_DELAY_MS) return;
                     pendingSteps.delete(stepId);
-                    markStepComplete(stepId, state.button);
+                    startVisualVerification(stepId, state.button);
                 });
             }
 
@@ -699,10 +790,9 @@
                     btn.onclick = function() {
                         if (!this.classList.contains('completed')) {
                             this.classList.add('pending');
-                            this.querySelector('span').innerText = "Return to confirm...";
+                            this.querySelector('span').innerText = "Return to verify...";
                             pendingSteps.set(s.id, {
                                 button: this,
-                                startedAt: Date.now(),
                                 leftPage: false
                             });
                         }
