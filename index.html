@@ -384,7 +384,7 @@
     <div class="main-container">
         <div id="creator-section" class="card">
             <h2>Locker Creator</h2>
-            <p>Generate a secure link locker with 5 fields.</p>
+            <p>Generate a secure link locker with 6 fields.</p>
             
             <div class="edit-tool">
                 <input type="text" id="import-url" placeholder="Paste generated link here to edit..." oninput="decodeLink()">
@@ -395,20 +395,24 @@
                 <input type="text" id="yt-ch" value="https://www.youtube.com/@Bingxxo" readonly>
             </div>
             <div class="input-wrapper">
+                <i class="fab fa-instagram"></i>
+                <input type="text" id="ig-fl" value="https://www.instagram.com/erro_rcodee/" readonly>
+            </div>
+            <div class="input-wrapper">
                 <i class="fas fa-play-circle"></i>
-                <input type="text" id="yt-vd" placeholder="2. YouTube Video Link">
+                <input type="text" id="yt-vd" placeholder="3. YouTube Video Link">
             </div>
             <div class="input-wrapper">
                 <i class="fas fa-film"></i>
-                <input type="text" id="ig-rl" placeholder="3. Instagram Reel Link">
+                <input type="text" id="ig-rl" placeholder="4. Instagram Reel Link">
             </div>
             <div class="input-wrapper">
                 <i class="fas fa-link"></i>
-                <input type="text" id="dest-url" placeholder="4. Secret Destination Link">
+                <input type="text" id="dest-url" placeholder="5. Secret Destination Link">
             </div>
             <div class="input-wrapper">
                 <i class="fas fa-comment-dots"></i>
-                <textarea id="creator-msg" placeholder="5. Professional Message for Users..."></textarea>
+                <textarea id="creator-msg" placeholder="6. Professional Message for Users..."></textarea>
             </div>
 
             <button class="btn btn-gen" onclick="generateLink()">
@@ -448,6 +452,7 @@
         canonicalParams.sort();
         const storageKey = "sub4unlock_v4_" + hashString(canonicalParams.toString());
         const LOCKED_YT_CHANNEL_URL = "https://www.youtube.com/@Bingxxo";
+        const LOCKED_IG_FOLLOW_URL = "https://www.instagram.com/erro_rcodee/";
 
         function hashString(value) {
             let hash = 5381;
@@ -520,6 +525,7 @@
         function generateLink() {
             const taskLinks = {
                 ych: sanitizeHttpUrl(LOCKED_YT_CHANNEL_URL),
+                ifl: sanitizeHttpUrl(LOCKED_IG_FOLLOW_URL),
                 yvd: sanitizeHttpUrl(document.getElementById('yt-vd').value),
                 irl: sanitizeHttpUrl(document.getElementById('ig-rl').value)
             };
@@ -538,6 +544,7 @@
 
             const data = {
                 ych: encodeBase64(taskLinks.ych || 'none'),
+                ifl: encodeBase64(taskLinks.ifl || 'none'),
                 yvd: encodeBase64(taskLinks.yvd || 'none'),
                 irl: encodeBase64(taskLinks.irl || 'none'),
                 msg: encodeBase64(creatorMsg || 'none'),
@@ -571,6 +578,7 @@
                 };
 
                 document.getElementById('yt-ch').value = LOCKED_YT_CHANNEL_URL;
+                document.getElementById('ig-fl').value = LOCKED_IG_FOLLOW_URL;
                 setField('yt-vd', 'yvd');
                 setField('ig-rl', 'irl');
                 setField('creator-msg', 'msg');
@@ -600,6 +608,7 @@
         function initLocker() {
             const steps = [
                 { id: 'ych', name: 'Subscribe Channel', iconClass: 'fab', icon: 'fa-youtube', class: 'btn-yt' },
+                { id: 'ifl', name: 'Follow on Instagram', iconClass: 'fab', icon: 'fa-instagram', class: 'btn-ig' },
                 { id: 'yvd', name: 'Like YouTube Video', iconClass: 'fas', icon: 'fa-play-circle', class: 'btn-yt' },
                 { id: 'irl', name: 'Like Instagram Reel', iconClass: 'fas', icon: 'fa-film', class: 'btn-ig' }
             ];
@@ -668,7 +677,9 @@
                 const raw = params.get(s.id);
                 const link = s.id === 'ych'
                     ? sanitizeHttpUrl(LOCKED_YT_CHANNEL_URL)
-                    : sanitizeHttpUrl(decodeBase64(raw, 'none'));
+                    : s.id === 'ifl'
+                        ? sanitizeHttpUrl(LOCKED_IG_FOLLOW_URL)
+                        : sanitizeHttpUrl(decodeBase64(raw, 'none'));
                 if (link !== '') {
                     activeCount++;
                     const btn = document.createElement('a');
